@@ -22,6 +22,41 @@ const {
 } = await import "https://rozek.github.io/langchain-js-bundle/dist/index.js"
 ```
 
+## Usage in Node.js or Browser Environments ##
+
+Assuming that you have installed the module, you may proceed as follows
+
+```typescript
+  import {
+    ChatOpenAI, HumanMessage,SystemMessage, ChatPromptTemplate, StringOutputParser
+  } from 'langchain-js-bundle'
+
+  const Model = new ChatOpenAI({
+    openAIApiKey:'enter you OpenAI API Key here',
+  })
+
+  async function askModel (Input) {
+    const Prompt = ChatPromptTemplate.fromMessages([
+      new SystemMessage('You are a helpful assistant'),
+      new HumanMessage(Input),
+    ])
+
+    const Parser = new StringOutputParser()
+    const Chain  = Prompt.pipe(Model).pipe(Parser)
+
+    return await Chain.invoke()
+  }
+
+  ;(async () => {
+    try {
+      const Response = await askModel('Who was Joseph Weizenbaum?')
+      console.log(Response)
+    } catch (Signal) {
+      console.error('chat completion failed',Signal)
+    }
+  })()
+```
+
 
 
 
