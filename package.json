@@ -1,19 +1,7 @@
 {
   "name": "langchain-js-bundle",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "a consolidated bundle of LangChainJS and LangGraphJS modules for AI examples",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "vite build",
-    "prepublishOnly": "npm run build",
-    "test": "vitest run"
-  },
   "keywords": [
     "langchain",
     "langgraph",
@@ -24,8 +12,29 @@
     "chat",
     "agent"
   ],
-  "author": "",
+  "author": "Andreas Rozek <a.rozek@gmx.de> (https://www.rozek.de/)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rozek/langchain-js-bundle.git"
+  },
+  "homepage": "https://github.com/rozek/langchain-js-bundle#readme",
+  "bugs": {
+    "url": "https://github.com/rozek/langchain-js-bundle/issues"
+  },
+
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "npm run build",
+    "test": "vitest run"
+  },
   "dependencies": {
     "@langchain/anthropic": "^0.3.15",
     "@langchain/cerebras": "^0.0.1",
