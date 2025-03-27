@@ -120,28 +120,20 @@ export default defineConfig({
       '@langchain/cerebras',
       '@langchain/community',
       '@langchain/langgraph',
-      'langchain',
-      'html-to-text',
-      'pdf-parse',
-      'zod-to-json-schema'
+      'langchain'
     ],
     esbuildOptions: {
       target: 'esnext', // modern browser target
-      // Node.js global to browser globalThis
-      define: {
+      define: { // Node.js global to browser globalThis
         global: 'globalThis',
       },
-      // ignore Node.js built-ins
-      platform: 'browser',
+      platform: 'browser', // ignore Node.js built-ins
     },
   },
   // define browser environment to help with tree-shaking
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),
     'process.env.BROWSER': JSON.stringify(true),
-    'process.versions': JSON.stringify({
-      node: '16.0.0'
-    })
+    'process.versions': JSON.stringify({ node:'16.0.0' })
   },
-
 });
