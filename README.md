@@ -27,10 +27,48 @@ const {
 Assuming that you have installed the module, you may proceed as follows
 
 ```typescript
+import {
+  ChatOpenAI, HumanMessage,SystemMessage, ChatPromptTemplate, StringOutputParser
+} from 'langchain-js-bundle'
+
+const Model = new ChatOpenAI({
+  openAIApiKey:'enter you OpenAI API Key here',
+})
+
+async function askModel (Input) {
+  const Prompt = ChatPromptTemplate.fromMessages([
+    new SystemMessage('You are a helpful assistant'),
+    new HumanMessage(Input),
+  ])
+
+  const Parser = new StringOutputParser()
+  const Chain  = Prompt.pipe(Model).pipe(Parser)
+
+  return await Chain.invoke()
+}
+
+;(async () => {
+  try {
+    const Response = await askModel('Who was Joseph Weizenbaum?')
+    console.log(Response)
+  } catch (Signal) {
+    console.error('chat completion failed',Signal)
+  }
+})()
+```
+
+## Usage within Svelte ##
+
+For Svelte, it is recommended to import the package in a module context:
+
+```html
+<script context="module">
   import {
     ChatOpenAI, HumanMessage,SystemMessage, ChatPromptTemplate, StringOutputParser
   } from 'langchain-js-bundle'
+</script>
 
+<script>
   const Model = new ChatOpenAI({
     openAIApiKey:'enter you OpenAI API Key here',
   })
@@ -55,12 +93,8 @@ Assuming that you have installed the module, you may proceed as follows
       console.error('chat completion failed',Signal)
     }
   })()
+</script>
 ```
-
-
-
-
-
 
 ## Build Instructions ##
 
