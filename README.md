@@ -17,7 +17,9 @@ npm install langchain-js-bundle
 Or you may dynamically import it using an `import` expression
 
 ```javascript
-const { ChatOpenAI, HumanMessage,SystemMessage,AIMessage } = await import "https://rozek.github.io/langchain-js-bundle/dist/index.js"
+const {
+  ChatOpenAI, HumanMessage,SystemMessage, ChatPromptTemplate, StringOutputParser
+} = await import "https://rozek.github.io/langchain-js-bundle/dist/index.js"
 ```
 
 
