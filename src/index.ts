@@ -15,12 +15,6 @@
     MistralAIEmbeddings
   } from '@langchain/mistralai'
 
-  export {                                                             // Ollama
-    Ollama,
-    ChatOllama,
-    OllamaEmbeddings
-  } from '@langchain/ollama'
-
   export {                                                               // Groq
     ChatGroq,
   } from '@langchain/groq'
@@ -28,6 +22,12 @@
   export {                                                           // Cerebras
     ChatCerebras
   } from '@langchain/cerebras'
+
+  export {                                                             // Ollama
+    Ollama,
+    ChatOllama,
+    OllamaEmbeddings
+  } from '@langchain/ollama'
 
 /**** Core Components ****/
 
