@@ -1,6 +1,6 @@
 {
   "name": "langchain-js-bundle",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a consolidated bundle of LangChainJS and LangGraphJS modules for AI examples",
   "keywords": [
     "langchain",
