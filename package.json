@@ -22,7 +22,6 @@
   "bugs": {
     "url": "https://github.com/rozek/langchain-js-bundle/issues"
   },
-
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -40,6 +39,7 @@
     "@langchain/cerebras": "^0.0.1",
     "@langchain/community": "^0.3.37",
     "@langchain/core": "^0.3.43",
+    "@langchain/groq": "^0.2.0",
     "@langchain/langgraph": "^0.2.59",
     "@langchain/mistralai": "^0.2.0",
     "@langchain/ollama": "^0.2.0",
