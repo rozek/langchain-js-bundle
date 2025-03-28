@@ -21,6 +21,10 @@
     OllamaEmbeddings
   } from '@langchain/ollama'
 
+  export {                                                               // Groq
+    ChatGroq,
+  } from '@langchain/groq'
+
   export {                                                           // Cerebras
     ChatCerebras
   } from '@langchain/cerebras'
