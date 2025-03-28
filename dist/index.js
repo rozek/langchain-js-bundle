@@ -42549,16 +42549,2812 @@ class PZ extends j_ {
     return { Mistral: e };
   }
 }
-const lU = "0.5.14", x$ = "11434", V$ = `http://127.0.0.1:${x$}`;
-var dU = Object.defineProperty, fU = (t, e, n) => e in t ? dU(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n, db = (t, e, n) => (fU(t, typeof e != "symbol" ? e + "" : e, n), n);
-class Q_ extends Error {
+const Au = "0.5.0";
+let Hj = !1, td, x$, V$, pg, z$, Z$, K$, H$, G$;
+function lU(t, e = { auto: !1 }) {
+  if (Hj)
+    throw new Error(`you must \`import 'groq-sdk/shims/${t.kind}'\` before importing anything else from groq-sdk`);
+  if (td)
+    throw new Error(`can't \`import 'groq-sdk/shims/${t.kind}'\` after \`import 'groq-sdk/shims/${td}'\``);
+  Hj = e.auto, td = t.kind, x$ = t.fetch, V$ = t.FormData, pg = t.File, z$ = t.ReadableStream, Z$ = t.getMultipartRequestOptions, K$ = t.getDefaultAgent, H$ = t.fileFromPath, G$ = t.isFsReadStream;
+}
+let dU = class {
+  constructor(e) {
+    this.body = e;
+  }
+  get [Symbol.toStringTag]() {
+    return "MultipartBody";
+  }
+};
+function fU({ manuallyImported: t } = {}) {
+  const e = t ? "You may need to use polyfills" : "Add one of these imports before your first `import … from 'groq-sdk'`:\n- `import 'groq-sdk/shims/node'` (if you're running on Node)\n- `import 'groq-sdk/shims/web'` (otherwise)\n";
+  let n, a, r, i;
+  try {
+    n = fetch, a = Request, r = Response, i = Headers;
+  } catch (s) {
+    throw new Error(`this environment is missing the following Web Fetch API type: ${s.message}. ${e}`);
+  }
+  return {
+    kind: "web",
+    fetch: n,
+    Request: a,
+    Response: r,
+    Headers: i,
+    FormData: (
+      // @ts-ignore
+      typeof FormData < "u" ? FormData : class {
+        // @ts-ignore
+        constructor() {
+          throw new Error(`file uploads aren't supported in this environment yet as 'FormData' is undefined. ${e}`);
+        }
+      }
+    ),
+    Blob: typeof Blob < "u" ? Blob : class {
+      constructor() {
+        throw new Error(`file uploads aren't supported in this environment yet as 'Blob' is undefined. ${e}`);
+      }
+    },
+    File: (
+      // @ts-ignore
+      typeof File < "u" ? File : class {
+        // @ts-ignore
+        constructor() {
+          throw new Error(`file uploads aren't supported in this environment yet as 'File' is undefined. ${e}`);
+        }
+      }
+    ),
+    ReadableStream: (
+      // @ts-ignore
+      typeof ReadableStream < "u" ? ReadableStream : class {
+        // @ts-ignore
+        constructor() {
+          throw new Error(`streaming isn't supported in this environment yet as 'ReadableStream' is undefined. ${e}`);
+        }
+      }
+    ),
+    getMultipartRequestOptions: async (s, o) => ({
+      ...o,
+      body: new dU(s)
+    }),
+    getDefaultAgent: (s) => {
+    },
+    fileFromPath: () => {
+      throw new Error("The `fileFromPath` function is only supported in Node. See the README for more details: https://www.github.com/groq/groq-typescript#file-uploads");
+    },
+    isFsReadStream: (s) => !1
+  };
+}
+td || lU(fU(), { auto: !0 });
+class br extends Error {
+}
+let En = class mg extends br {
+  constructor(e, n, a, r) {
+    super(`${mg.makeMessage(e, n, a)}`), this.status = e, this.headers = r, this.error = n;
+  }
+  static makeMessage(e, n, a) {
+    const r = n?.message ? typeof n.message == "string" ? n.message : JSON.stringify(n.message) : n ? JSON.stringify(n) : a;
+    return e && r ? `${e} ${r}` : e ? `${e} status code (no body)` : r || "(no status code or body)";
+  }
+  static generate(e, n, a, r) {
+    if (!e)
+      return new Vp({ cause: yg(n) });
+    const i = n;
+    return e === 400 ? new X$(e, i, a, r) : e === 401 ? new Q$(e, i, a, r) : e === 403 ? new Y$(e, i, a, r) : e === 404 ? new eM(e, i, a, r) : e === 409 ? new tM(e, i, a, r) : e === 422 ? new nM(e, i, a, r) : e === 429 ? new rM(e, i, a, r) : e >= 500 ? new aM(e, i, a, r) : new mg(e, i, a, r);
+  }
+}, bg = class extends En {
+  constructor({ message: e } = {}) {
+    super(void 0, void 0, e || "Request was aborted.", void 0), this.status = void 0;
+  }
+}, Vp = class extends En {
+  constructor({ message: e, cause: n }) {
+    super(void 0, void 0, e || "Connection error.", void 0), this.status = void 0, n && (this.cause = n);
+  }
+}, W$ = class extends Vp {
+  constructor({ message: e } = {}) {
+    super({ message: e ?? "Request timed out." });
+  }
+}, X$ = class extends En {
+  constructor() {
+    super(...arguments), this.status = 400;
+  }
+}, Q$ = class extends En {
+  constructor() {
+    super(...arguments), this.status = 401;
+  }
+}, Y$ = class extends En {
+  constructor() {
+    super(...arguments), this.status = 403;
+  }
+}, eM = class extends En {
+  constructor() {
+    super(...arguments), this.status = 404;
+  }
+}, tM = class extends En {
+  constructor() {
+    super(...arguments), this.status = 409;
+  }
+}, nM = class extends En {
+  constructor() {
+    super(...arguments), this.status = 422;
+  }
+}, rM = class extends En {
+  constructor() {
+    super(...arguments), this.status = 429;
+  }
+}, aM = class extends En {
+}, hU = class zl {
   constructor(e, n) {
-    super(e), this.error = e, this.status_code = n, this.name = "ResponseError", Error.captureStackTrace && Error.captureStackTrace(this, Q_);
+    this.iterator = e, this.controller = n;
+  }
+  static fromSSEResponse(e, n) {
+    let a = !1;
+    const r = new pU();
+    async function* i() {
+      if (!e.body)
+        throw n.abort(), new br("Attempted to iterate over a response with no body");
+      const o = new Gh(), l = Gj(e.body);
+      for await (const f of l)
+        for (const u of o.decode(f)) {
+          const c = r.decode(u);
+          c && (yield c);
+        }
+      for (const f of o.flush()) {
+        const u = r.decode(f);
+        u && (yield u);
+      }
+    }
+    async function* s() {
+      if (a)
+        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
+      a = !0;
+      let o = !1;
+      try {
+        for await (const l of i())
+          if (!o) {
+            if (l.data.startsWith("[DONE]")) {
+              o = !0;
+              continue;
+            }
+            if (l.event === null) {
+              let f;
+              try {
+                f = JSON.parse(l.data);
+              } catch (u) {
+                throw console.error("Could not parse message into JSON:", l.data), console.error("From chunk:", l.raw), u;
+              }
+              if (f && f.error)
+                throw new En(void 0, f.error, void 0, void 0);
+              yield f;
+            }
+          }
+        o = !0;
+      } catch (l) {
+        if (l instanceof Error && l.name === "AbortError")
+          return;
+        throw l;
+      } finally {
+        o || n.abort();
+      }
+    }
+    return new zl(s, n);
+  }
+  /**
+   * Generates a Stream from a newline-separated ReadableStream
+   * where each item is a JSON value.
+   */
+  static fromReadableStream(e, n) {
+    let a = !1;
+    async function* r() {
+      const s = new Gh(), o = Gj(e);
+      for await (const l of o)
+        for (const f of s.decode(l))
+          yield f;
+      for (const l of s.flush())
+        yield l;
+    }
+    async function* i() {
+      if (a)
+        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
+      a = !0;
+      let s = !1;
+      try {
+        for await (const o of r())
+          s || o && (yield JSON.parse(o));
+        s = !0;
+      } catch (o) {
+        if (o instanceof Error && o.name === "AbortError")
+          return;
+        throw o;
+      } finally {
+        s || n.abort();
+      }
+    }
+    return new zl(i, n);
+  }
+  [Symbol.asyncIterator]() {
+    return this.iterator();
+  }
+  /**
+   * Splits the stream into two streams which can be
+   * independently read from at different speeds.
+   */
+  tee() {
+    const e = [], n = [], a = this.iterator(), r = (i) => ({
+      next: () => {
+        if (i.length === 0) {
+          const s = a.next();
+          e.push(s), n.push(s);
+        }
+        return i.shift();
+      }
+    });
+    return [
+      new zl(() => r(e), this.controller),
+      new zl(() => r(n), this.controller)
+    ];
+  }
+  /**
+   * Converts this stream to a newline-separated ReadableStream of
+   * JSON stringified values in the stream
+   * which can be turned back into a Stream with `Stream.fromReadableStream()`.
+   */
+  toReadableStream() {
+    const e = this;
+    let n;
+    const a = new TextEncoder();
+    return new z$({
+      async start() {
+        n = e[Symbol.asyncIterator]();
+      },
+      async pull(r) {
+        try {
+          const { value: i, done: s } = await n.next();
+          if (s)
+            return r.close();
+          const o = a.encode(JSON.stringify(i) + `
+`);
+          r.enqueue(o);
+        } catch (i) {
+          r.error(i);
+        }
+      },
+      async cancel() {
+        await n.return?.();
+      }
+    });
+  }
+}, pU = class {
+  constructor() {
+    this.event = null, this.data = [], this.chunks = [];
+  }
+  decode(e) {
+    if (e.endsWith("\r") && (e = e.substring(0, e.length - 1)), !e) {
+      if (!this.event && !this.data.length)
+        return null;
+      const i = {
+        event: this.event,
+        data: this.data.join(`
+`),
+        raw: this.chunks
+      };
+      return this.event = null, this.data = [], this.chunks = [], i;
+    }
+    if (this.chunks.push(e), e.startsWith(":"))
+      return null;
+    let [n, a, r] = mU(e, ":");
+    return r.startsWith(" ") && (r = r.substring(1)), n === "event" ? this.event = r : n === "data" && this.data.push(r), null;
+  }
+}, Gh = class gg {
+  constructor() {
+    this.buffer = [], this.trailingCR = !1;
+  }
+  decode(e) {
+    let n = this.decodeText(e);
+    if (this.trailingCR && (n = "\r" + n, this.trailingCR = !1), n.endsWith("\r") && (this.trailingCR = !0, n = n.slice(0, -1)), !n)
+      return [];
+    const a = gg.NEWLINE_CHARS.has(n[n.length - 1] || "");
+    let r = n.split(gg.NEWLINE_REGEXP);
+    return r.length === 1 && !a ? (this.buffer.push(r[0]), []) : (this.buffer.length > 0 && (r = [this.buffer.join("") + r[0], ...r.slice(1)], this.buffer = []), a || (this.buffer = [r.pop() || ""]), r);
+  }
+  decodeText(e) {
+    if (e == null)
+      return "";
+    if (typeof e == "string")
+      return e;
+    if (typeof Ke < "u") {
+      if (e instanceof Ke)
+        return e.toString();
+      if (e instanceof Uint8Array)
+        return Ke.from(e).toString();
+      throw new br(`Unexpected: received non-Uint8Array (${e.constructor.name}) stream chunk in an environment with a global "Buffer" defined, which this library assumes to be Node. Please report this error.`);
+    }
+    if (typeof TextDecoder < "u") {
+      if (e instanceof Uint8Array || e instanceof ArrayBuffer)
+        return this.textDecoder ?? (this.textDecoder = new TextDecoder("utf8")), this.textDecoder.decode(e);
+      throw new br(`Unexpected: received non-Uint8Array/ArrayBuffer (${e.constructor.name}) in a web platform. Please report this error.`);
+    }
+    throw new br("Unexpected: neither Buffer nor TextDecoder are available as globals. Please report this error.");
+  }
+  flush() {
+    if (!this.buffer.length && !this.trailingCR)
+      return [];
+    const e = [this.buffer.join("")];
+    return this.buffer = [], this.trailingCR = !1, e;
+  }
+};
+Gh.NEWLINE_CHARS = /* @__PURE__ */ new Set([`
+`, "\r", "\v", "\f", "", "", "", "", "\u2028", "\u2029"]);
+Gh.NEWLINE_REGEXP = /\r\n|[\n\r\x0b\x0c\x1c\x1d\x1e\x85\u2028\u2029]/g;
+function mU(t, e) {
+  const n = t.indexOf(e);
+  return n !== -1 ? [t.substring(0, n), e, t.substring(n + e.length)] : [t, "", ""];
+}
+function Gj(t) {
+  if (t[Symbol.asyncIterator])
+    return t;
+  const e = t.getReader();
+  return {
+    async next() {
+      try {
+        const n = await e.read();
+        return n?.done && e.releaseLock(), n;
+      } catch (n) {
+        throw e.releaseLock(), n;
+      }
+    },
+    async return() {
+      const n = e.cancel();
+      return e.releaseLock(), await n, { done: !0, value: void 0 };
+    },
+    [Symbol.asyncIterator]() {
+      return this;
+    }
+  };
+}
+const iM = (t) => t != null && typeof t == "object" && typeof t.url == "string" && typeof t.blob == "function", sM = (t) => t != null && typeof t == "object" && typeof t.name == "string" && typeof t.lastModified == "number" && Q_(t), Q_ = (t) => t != null && typeof t == "object" && typeof t.size == "number" && typeof t.type == "string" && typeof t.text == "function" && typeof t.slice == "function" && typeof t.arrayBuffer == "function", bU = (t) => sM(t) || iM(t) || G$(t);
+async function oM(t, e, n) {
+  if (t = await t, n ?? (n = sM(t) ? { lastModified: t.lastModified, type: t.type } : {}), iM(t)) {
+    const r = await t.blob();
+    return e || (e = new URL(t.url).pathname.split(/[\\/]/).pop() ?? "unknown_file"), new pg([r], e, n);
+  }
+  const a = await gU(t);
+  if (e || (e = yU(t) ?? "unknown_file"), !n.type) {
+    const r = a[0]?.type;
+    typeof r == "string" && (n = { ...n, type: r });
+  }
+  return new pg(a, e, n);
+}
+async function gU(t) {
+  let e = [];
+  if (typeof t == "string" || ArrayBuffer.isView(t) || // includes Uint8Array, Buffer, etc.
+  t instanceof ArrayBuffer)
+    e.push(t);
+  else if (Q_(t))
+    e.push(await t.arrayBuffer());
+  else if (wU(t))
+    for await (const n of t)
+      e.push(n);
+  else
+    throw new Error(`Unexpected data type: ${typeof t}; constructor: ${t?.constructor?.name}; props: ${_U(t)}`);
+  return e;
+}
+function _U(t) {
+  return `[${Object.getOwnPropertyNames(t).map((n) => `"${n}"`).join(", ")}]`;
+}
+function yU(t) {
+  return db(t.name) || db(t.filename) || // For fs.ReadStream
+  db(t.path)?.split(/[\\/]/).pop();
+}
+const db = (t) => {
+  if (typeof t == "string")
+    return t;
+  if (typeof Ke < "u" && t instanceof Ke)
+    return String(t);
+}, wU = (t) => t != null && typeof t == "object" && typeof t[Symbol.asyncIterator] == "function", Wj = (t) => t && typeof t == "object" && t.body && t[Symbol.toStringTag] === "MultipartBody", uM = async (t) => {
+  const e = await vU(t.body);
+  return Z$(e, t);
+}, vU = async (t) => {
+  const e = new V$();
+  return await Promise.all(Object.entries(t || {}).map(([n, a]) => _g(e, n, a))), e;
+}, _g = async (t, e, n) => {
+  if (n !== void 0) {
+    if (n == null)
+      throw new TypeError(`Received null for "${e}"; to pass null in FormData, you must use the string 'null'`);
+    if (typeof n == "string" || typeof n == "number" || typeof n == "boolean")
+      t.append(e, String(n));
+    else if (bU(n)) {
+      const a = await oM(n);
+      t.append(e, a);
+    } else if (Array.isArray(n))
+      await Promise.all(n.map((a) => _g(t, e + "[]", a)));
+    else if (typeof n == "object")
+      await Promise.all(Object.entries(n).map(([a, r]) => _g(t, `${e}[${a}]`, r)));
+    else
+      throw new TypeError(`Invalid value given to form, expected a string, number, boolean, object, Array, File or Blob but got ${n} instead`);
+  }
+};
+async function cM(t) {
+  const { response: e } = t;
+  if (t.options.stream)
+    return Zu("response", e.status, e.url, e.headers, e.body), t.options.__streamClass ? t.options.__streamClass.fromSSEResponse(e, t.controller) : hU.fromSSEResponse(e, t.controller);
+  if (e.status === 204)
+    return null;
+  if (t.options.__binaryResponse)
+    return e;
+  const n = e.headers.get("content-type");
+  if (n?.includes("application/json") || n?.includes("application/vnd.api+json")) {
+    const i = await e.json();
+    return Zu("response", e.status, e.url, e.headers, i), i;
+  }
+  const r = await e.text();
+  return Zu("response", e.status, e.url, e.headers, r), r;
+}
+let lM = class dM extends Promise {
+  constructor(e, n = cM) {
+    super((a) => {
+      a(null);
+    }), this.responsePromise = e, this.parseResponse = n;
+  }
+  _thenUnwrap(e) {
+    return new dM(this.responsePromise, async (n) => e(await this.parseResponse(n)));
+  }
+  /**
+   * Gets the raw `Response` instance instead of parsing the response
+   * data.
+   *
+   * If you want to parse the response body but still get the `Response`
+   * instance, you can use {@link withResponse()}.
+   *
+   * 👋 Getting the wrong TypeScript type for `Response`?
+   * Try setting `"moduleResolution": "NodeNext"` if you can,
+   * or add one of these imports before your first `import … from 'groq-sdk'`:
+   * - `import 'groq-sdk/shims/node'` (if you're running on Node)
+   * - `import 'groq-sdk/shims/web'` (otherwise)
+   */
+  asResponse() {
+    return this.responsePromise.then((e) => e.response);
+  }
+  /**
+   * Gets the parsed response data and the raw `Response` instance.
+   *
+   * If you just want to get the raw `Response` instance without parsing it,
+   * you can use {@link asResponse()}.
+   *
+   *
+   * 👋 Getting the wrong TypeScript type for `Response`?
+   * Try setting `"moduleResolution": "NodeNext"` if you can,
+   * or add one of these imports before your first `import … from 'groq-sdk'`:
+   * - `import 'groq-sdk/shims/node'` (if you're running on Node)
+   * - `import 'groq-sdk/shims/web'` (otherwise)
+   */
+  async withResponse() {
+    const [e, n] = await Promise.all([this.parse(), this.asResponse()]);
+    return { data: e, response: n };
+  }
+  parse() {
+    return this.parsedPromise || (this.parsedPromise = this.responsePromise.then(this.parseResponse)), this.parsedPromise;
+  }
+  then(e, n) {
+    return this.parse().then(e, n);
+  }
+  catch(e) {
+    return this.parse().catch(e);
+  }
+  finally(e) {
+    return this.parse().finally(e);
+  }
+}, SU = class {
+  constructor({
+    baseURL: e,
+    maxRetries: n = 2,
+    timeout: a = 6e4,
+    // 1 minute
+    httpAgent: r,
+    fetch: i
+  }) {
+    this.baseURL = e, this.maxRetries = fb("maxRetries", n), this.timeout = fb("timeout", a), this.httpAgent = r, this.fetch = i ?? x$;
+  }
+  authHeaders(e) {
+    return {};
+  }
+  /**
+   * Override this to add your own default headers, for example:
+   *
+   *  {
+   *    ...super.defaultHeaders(),
+   *    Authorization: 'Bearer 123',
+   *  }
+   */
+  defaultHeaders(e) {
+    return {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "User-Agent": this.getUserAgent(),
+      ...CU(),
+      ...this.authHeaders(e)
+    };
+  }
+  /**
+   * Override this to add your own headers validation:
+   */
+  validateHeaders(e, n) {
+  }
+  defaultIdempotencyKey() {
+    return `stainless-node-retry-${NU()}`;
+  }
+  get(e, n) {
+    return this.methodRequest("get", e, n);
+  }
+  post(e, n) {
+    return this.methodRequest("post", e, n);
+  }
+  patch(e, n) {
+    return this.methodRequest("patch", e, n);
+  }
+  put(e, n) {
+    return this.methodRequest("put", e, n);
+  }
+  delete(e, n) {
+    return this.methodRequest("delete", e, n);
+  }
+  methodRequest(e, n, a) {
+    return this.request(Promise.resolve(a).then(async (r) => {
+      const i = r && Q_(r?.body) ? new DataView(await r.body.arrayBuffer()) : r?.body instanceof DataView ? r.body : r?.body instanceof ArrayBuffer ? new DataView(r.body) : r && ArrayBuffer.isView(r?.body) ? new DataView(r.body.buffer) : r?.body;
+      return { method: e, path: n, ...r, body: i };
+    }));
+  }
+  getAPIList(e, n, a) {
+    return this.requestAPIList(n, { method: "get", path: e, ...a });
+  }
+  calculateContentLength(e) {
+    if (typeof e == "string") {
+      if (typeof Ke < "u")
+        return Ke.byteLength(e, "utf8").toString();
+      if (typeof TextEncoder < "u")
+        return new TextEncoder().encode(e).length.toString();
+    } else if (ArrayBuffer.isView(e))
+      return e.byteLength.toString();
+    return null;
+  }
+  buildRequest(e) {
+    const { method: n, path: a, query: r, headers: i = {} } = e, s = ArrayBuffer.isView(e.body) || e.__binaryRequest && typeof e.body == "string" ? e.body : Wj(e.body) ? e.body.body : e.body ? JSON.stringify(e.body, null, 2) : null, o = this.calculateContentLength(s), l = this.buildURL(a, r);
+    "timeout" in e && fb("timeout", e.timeout);
+    const f = e.timeout ?? this.timeout, u = e.httpAgent ?? this.httpAgent ?? K$(l), c = f + 1e3;
+    typeof u?.options?.timeout == "number" && c > (u.options.timeout ?? 0) && (u.options.timeout = c), this.idempotencyHeader && n !== "get" && (e.idempotencyKey || (e.idempotencyKey = this.defaultIdempotencyKey()), i[this.idempotencyHeader] = e.idempotencyKey);
+    const h = this.buildHeaders({ options: e, headers: i, contentLength: o });
+    return { req: {
+      method: n,
+      ...s && { body: s },
+      headers: h,
+      ...u && { agent: u },
+      // @ts-ignore node-fetch uses a custom AbortSignal type that is
+      // not compatible with standard web types
+      signal: e.signal ?? null
+    }, url: l, timeout: f };
+  }
+  buildHeaders({ options: e, headers: n, contentLength: a }) {
+    const r = {};
+    a && (r["content-length"] = a);
+    const i = this.defaultHeaders(e);
+    return tP(r, i), tP(r, n), Wj(e.body) && td !== "node" && delete r["content-type"], this.validateHeaders(r, n), r;
+  }
+  /**
+   * Used as a callback for mutating the given `FinalRequestOptions` object.
+   */
+  async prepareOptions(e) {
+  }
+  /**
+   * Used as a callback for mutating the given `RequestInit` object.
+   *
+   * This is useful for cases where you want to add certain headers based off of
+   * the request properties, e.g. `method` or `url`.
+   */
+  async prepareRequest(e, { url: n, options: a }) {
+  }
+  parseHeaders(e) {
+    return e ? Symbol.iterator in e ? Object.fromEntries(Array.from(e).map((n) => [...n])) : { ...e } : {};
+  }
+  makeStatusError(e, n, a, r) {
+    return En.generate(e, n, a, r);
+  }
+  request(e, n = null) {
+    return new lM(this.makeRequest(e, n));
+  }
+  async makeRequest(e, n) {
+    const a = await e;
+    n == null && (n = a.maxRetries ?? this.maxRetries), await this.prepareOptions(a);
+    const { req: r, url: i, timeout: s } = this.buildRequest(a);
+    if (await this.prepareRequest(r, { url: i, options: a }), Zu("request", i, a, r.headers), a.signal?.aborted)
+      throw new bg();
+    const o = new AbortController(), l = await this.fetchWithTimeout(i, r, s, o).catch(yg);
+    if (l instanceof Error) {
+      if (a.signal?.aborted)
+        throw new bg();
+      if (n)
+        return this.retryRequest(a, n);
+      throw l.name === "AbortError" ? new W$() : new Vp({ cause: l });
+    }
+    const f = jU(l.headers);
+    if (!l.ok) {
+      if (n && this.shouldRetry(l)) {
+        const m = `retrying, ${n} attempts remaining`;
+        return Zu(`response (error; ${m})`, l.status, i, f), this.retryRequest(a, n, f);
+      }
+      const u = await l.text().catch((m) => yg(m).message), c = TU(u), h = c ? void 0 : u;
+      throw Zu(`response (error; ${n ? "(error; no more retries left)" : "(error; not retryable)"})`, l.status, i, f, h), this.makeStatusError(l.status, c, h, f);
+    }
+    return { response: l, options: a, controller: o };
+  }
+  requestAPIList(e, n) {
+    const a = this.makeRequest(n, null);
+    return new OU(this, a, e);
+  }
+  buildURL(e, n) {
+    const a = MU(e) ? new URL(e) : new URL(this.baseURL + (this.baseURL.endsWith("/") && e.startsWith("/") ? e.slice(1) : e)), r = this.defaultQuery();
+    return EU(r) || (n = { ...r, ...n }), typeof n == "object" && n && !Array.isArray(n) && (a.search = this.stringifyQuery(n)), a.toString();
+  }
+  stringifyQuery(e) {
+    return Object.entries(e).filter(([n, a]) => typeof a < "u").map(([n, a]) => {
+      if (typeof a == "string" || typeof a == "number" || typeof a == "boolean")
+        return `${encodeURIComponent(n)}=${encodeURIComponent(a)}`;
+      if (a === null)
+        return `${encodeURIComponent(n)}=`;
+      throw new br(`Cannot stringify type ${typeof a}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`);
+    }).join("&");
+  }
+  async fetchWithTimeout(e, n, a, r) {
+    const { signal: i, ...s } = n || {};
+    i && i.addEventListener("abort", () => r.abort());
+    const o = setTimeout(() => r.abort(), a);
+    return this.getRequestClient().fetch.call(void 0, e, { signal: r.signal, ...s }).finally(() => {
+      clearTimeout(o);
+    });
+  }
+  getRequestClient() {
+    return { fetch: this.fetch };
+  }
+  shouldRetry(e) {
+    const n = e.headers.get("x-should-retry");
+    return n === "true" ? !0 : n === "false" ? !1 : e.status === 408 || e.status === 409 || e.status === 429 || e.status >= 500;
+  }
+  async retryRequest(e, n, a) {
+    let r;
+    const i = a?.["retry-after-ms"];
+    if (i) {
+      const o = parseFloat(i);
+      Number.isNaN(o) || (r = o);
+    }
+    const s = a?.["retry-after"];
+    if (s && !r) {
+      const o = parseFloat(s);
+      Number.isNaN(o) ? r = Date.parse(s) - Date.now() : r = o * 1e3;
+    }
+    if (!(r && 0 <= r && r < 60 * 1e3)) {
+      const o = e.maxRetries ?? this.maxRetries;
+      r = this.calculateDefaultRetryTimeoutMillis(n, o);
+    }
+    return await AU(r), this.makeRequest(e, n - 1);
+  }
+  calculateDefaultRetryTimeoutMillis(e, n) {
+    const i = n - e, s = Math.min(0.5 * Math.pow(2, i), 8), o = 1 - Math.random() * 0.25;
+    return s * o * 1e3;
+  }
+  getUserAgent() {
+    return `${this.constructor.name}/JS ${Au}`;
+  }
+}, OU = class extends lM {
+  constructor(e, n, a) {
+    super(n, async (r) => new a(e, r.response, await cM(r), r.options));
+  }
+  /**
+   * Allow auto-paginating iteration on an unawaited list call, eg:
+   *
+   *    for await (const item of client.items.list()) {
+   *      console.log(item)
+   *    }
+   */
+  async *[Symbol.asyncIterator]() {
+    const e = await this;
+    for await (const n of e)
+      yield n;
+  }
+};
+const jU = (t) => new Proxy(Object.fromEntries(
+  // @ts-ignore
+  t.entries()
+), {
+  get(e, n) {
+    const a = n.toString();
+    return e[a.toLowerCase()] || e[a];
+  }
+}), PU = () => {
+  if (typeof Deno < "u" && Deno.build != null)
+    return {
+      "X-Stainless-Lang": "js",
+      "X-Stainless-Package-Version": Au,
+      "X-Stainless-OS": Qj(Deno.build.os),
+      "X-Stainless-Arch": Xj(Deno.build.arch),
+      "X-Stainless-Runtime": "deno",
+      "X-Stainless-Runtime-Version": typeof Deno.version == "string" ? Deno.version : Deno.version?.deno ?? "unknown"
+    };
+  if (typeof EdgeRuntime < "u")
+    return {
+      "X-Stainless-Lang": "js",
+      "X-Stainless-Package-Version": Au,
+      "X-Stainless-OS": "Unknown",
+      "X-Stainless-Arch": `other:${EdgeRuntime}`,
+      "X-Stainless-Runtime": "edge",
+      "X-Stainless-Runtime-Version": ue.version
+    };
+  if (Object.prototype.toString.call(typeof ue < "u" ? ue : 0) === "[object process]")
+    return {
+      "X-Stainless-Lang": "js",
+      "X-Stainless-Package-Version": Au,
+      "X-Stainless-OS": Qj(ue.platform),
+      "X-Stainless-Arch": Xj(ue.arch),
+      "X-Stainless-Runtime": "node",
+      "X-Stainless-Runtime-Version": ue.version
+    };
+  const t = RU();
+  return t ? {
+    "X-Stainless-Lang": "js",
+    "X-Stainless-Package-Version": Au,
+    "X-Stainless-OS": "Unknown",
+    "X-Stainless-Arch": "unknown",
+    "X-Stainless-Runtime": `browser:${t.browser}`,
+    "X-Stainless-Runtime-Version": t.version
+  } : {
+    "X-Stainless-Lang": "js",
+    "X-Stainless-Package-Version": Au,
+    "X-Stainless-OS": "Unknown",
+    "X-Stainless-Arch": "unknown",
+    "X-Stainless-Runtime": "unknown",
+    "X-Stainless-Runtime-Version": "unknown"
+  };
+};
+function RU() {
+  if (typeof navigator > "u" || !navigator)
+    return null;
+  const t = [
+    { key: "edge", pattern: /Edge(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "ie", pattern: /MSIE(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "ie", pattern: /Trident(?:.*rv\:(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "chrome", pattern: /Chrome(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "firefox", pattern: /Firefox(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "safari", pattern: /(?:Version\W+(\d+)\.(\d+)(?:\.(\d+))?)?(?:\W+Mobile\S*)?\W+Safari/ }
+  ];
+  for (const { key: e, pattern: n } of t) {
+    const a = n.exec(navigator.userAgent);
+    if (a) {
+      const r = a[1] || 0, i = a[2] || 0, s = a[3] || 0;
+      return { browser: e, version: `${r}.${i}.${s}` };
+    }
+  }
+  return null;
+}
+const Xj = (t) => t === "x32" ? "x32" : t === "x86_64" || t === "x64" ? "x64" : t === "arm" ? "arm" : t === "aarch64" || t === "arm64" ? "arm64" : t ? `other:${t}` : "unknown", Qj = (t) => (t = t.toLowerCase(), t.includes("ios") ? "iOS" : t === "android" ? "Android" : t === "darwin" ? "MacOS" : t === "win32" ? "Windows" : t === "freebsd" ? "FreeBSD" : t === "openbsd" ? "OpenBSD" : t === "linux" ? "Linux" : t ? `Other:${t}` : "Unknown");
+let Yj;
+const CU = () => Yj ?? (Yj = PU()), TU = (t) => {
+  try {
+    return JSON.parse(t);
+  } catch {
+    return;
+  }
+}, $U = new RegExp("^(?:[a-z]+:)?//", "i"), MU = (t) => $U.test(t), AU = (t) => new Promise((e) => setTimeout(e, t)), fb = (t, e) => {
+  if (typeof e != "number" || !Number.isInteger(e))
+    throw new br(`${t} must be an integer`);
+  if (e < 0)
+    throw new br(`${t} must be a positive integer`);
+  return e;
+}, yg = (t) => t instanceof Error ? t : new Error(t), eP = (t) => {
+  if (typeof ue < "u")
+    return ue.env?.[t]?.trim() ?? void 0;
+  if (typeof Deno < "u")
+    return Deno.env?.get?.(t)?.trim();
+};
+function EU(t) {
+  if (!t)
+    return !0;
+  for (const e in t)
+    return !1;
+  return !0;
+}
+function IU(t, e) {
+  return Object.prototype.hasOwnProperty.call(t, e);
+}
+function tP(t, e) {
+  for (const n in e) {
+    if (!IU(e, n))
+      continue;
+    const a = n.toLowerCase();
+    if (!a)
+      continue;
+    const r = e[n];
+    r === null ? delete t[a] : r !== void 0 && (t[a] = r);
   }
 }
-class hU {
+function Zu(t, ...e) {
+  typeof ue < "u" && ue?.env?.DEBUG === "true" && console.log(`Groq:DEBUG:${t}`, ...e);
+}
+const NU = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (t) => {
+  const e = Math.random() * 16 | 0;
+  return (t === "x" ? e : e & 3 | 8).toString(16);
+}), kU = () => (
+  // @ts-ignore
+  typeof window < "u" && // @ts-ignore
+  typeof window.document < "u" && // @ts-ignore
+  typeof navigator < "u"
+);
+let vo = class {
+  constructor(e) {
+    this._client = e;
+  }
+};
+class Wh extends vo {
+  /**
+   * Transcribes audio into the input language.
+   */
+  create(e, n) {
+    return this._client.post("/openai/v1/audio/transcriptions", uM({ body: e, ...n }));
+  }
+}
+Wh || (Wh = {});
+class Xh extends vo {
+  /**
+   * Translates audio into English.
+   */
+  create(e, n) {
+    return this._client.post("/openai/v1/audio/translations", uM({ body: e, ...n }));
+  }
+}
+Xh || (Xh = {});
+class Qh extends vo {
+  constructor() {
+    super(...arguments), this.transcriptions = new Wh(this._client), this.translations = new Xh(this._client);
+  }
+}
+(function(t) {
+  t.Transcriptions = Wh, t.Translations = Xh;
+})(Qh || (Qh = {}));
+let Yh = class extends vo {
+  create(e, n) {
+    return this._client.post("/openai/v1/chat/completions", {
+      body: e,
+      ...n,
+      stream: e.stream ?? !1
+    });
+  }
+};
+Yh || (Yh = {});
+let ep = class extends vo {
+  constructor() {
+    super(...arguments), this.completions = new Yh(this._client);
+  }
+};
+(function(t) {
+  t.Completions = Yh;
+})(ep || (ep = {}));
+let tp = class extends vo {
+};
+tp || (tp = {});
+class np extends vo {
+  /**
+   * Creates an embedding vector representing the input text.
+   */
+  create(e, n) {
+    return this._client.post("/openai/v1/embeddings", { body: e, ...n });
+  }
+}
+np || (np = {});
+let rp = class extends vo {
+  /**
+   * Get a specific model
+   */
+  retrieve(e, n) {
+    return this._client.get(`/openai/v1/models/${e}`, n);
+  }
+  /**
+   * get all available models
+   */
+  list(e) {
+    return this._client.get("/openai/v1/models", e);
+  }
+  /**
+   * Delete a model
+   */
+  delete(e, n) {
+    return this._client.delete(`/openai/v1/models/${e}`, n);
+  }
+};
+rp || (rp = {});
+var fM;
+class ht extends SU {
+  /**
+   * API Client for interfacing with the Groq API.
+   *
+   * @param {string | undefined} [opts.apiKey=process.env['GROQ_API_KEY'] ?? undefined]
+   * @param {string} [opts.baseURL=process.env['GROQ_BASE_URL'] ?? https://api.groq.com] - Override the default base URL for the API.
+   * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
+   * @param {number} [opts.httpAgent] - An HTTP agent used to manage HTTP(s) connections.
+   * @param {Core.Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
+   * @param {number} [opts.maxRetries=2] - The maximum number of times the client will retry a request.
+   * @param {Core.Headers} opts.defaultHeaders - Default headers to include with every request to the API.
+   * @param {Core.DefaultQuery} opts.defaultQuery - Default query parameters to include with every request to the API.
+   * @param {boolean} [opts.dangerouslyAllowBrowser=false] - By default, client-side use of this library is not allowed, as it risks exposing your secret API credentials to attackers.
+   */
+  constructor({ baseURL: e = eP("GROQ_BASE_URL"), apiKey: n = eP("GROQ_API_KEY"), ...a } = {}) {
+    if (n === void 0)
+      throw new br("The GROQ_API_KEY environment variable is missing or empty; either provide it, or instantiate the Groq client with an apiKey option, like new Groq({ apiKey: 'My API Key' }).");
+    const r = {
+      apiKey: n,
+      ...a,
+      baseURL: e || "https://api.groq.com"
+    };
+    if (!r.dangerouslyAllowBrowser && kU())
+      throw new br(`It looks like you're running in a browser-like environment.
+
+This is disabled by default, as it risks exposing your secret API credentials to attackers.
+If you understand the risks and have appropriate mitigations in place,
+you can set the \`dangerouslyAllowBrowser\` option to \`true\`, e.g.,
+
+new Groq({ apiKey, dangerouslyAllowBrowser: true })`);
+    super({
+      baseURL: r.baseURL,
+      timeout: r.timeout ?? 6e4,
+      httpAgent: r.httpAgent,
+      maxRetries: r.maxRetries,
+      fetch: r.fetch
+    }), this.completions = new tp(this), this.chat = new ep(this), this.embeddings = new np(this), this.audio = new Qh(this), this.models = new rp(this), this._options = r, this.apiKey = n;
+  }
+  defaultQuery() {
+    return this._options.defaultQuery;
+  }
+  defaultHeaders(e) {
+    return {
+      ...super.defaultHeaders(e),
+      ...this._options.defaultHeaders
+    };
+  }
+  authHeaders(e) {
+    return { Authorization: `Bearer ${this.apiKey}` };
+  }
+}
+fM = ht;
+ht.Groq = fM;
+ht.GroqError = br;
+ht.APIError = En;
+ht.APIConnectionError = Vp;
+ht.APIConnectionTimeoutError = W$;
+ht.APIUserAbortError = bg;
+ht.NotFoundError = eM;
+ht.ConflictError = tM;
+ht.RateLimitError = rM;
+ht.BadRequestError = X$;
+ht.AuthenticationError = Q$;
+ht.InternalServerError = aM;
+ht.PermissionDeniedError = Y$;
+ht.UnprocessableEntityError = nM;
+ht.toFile = oM;
+ht.fileFromPath = H$;
+(function(t) {
+  t.Completions = tp, t.Chat = ep, t.Embeddings = np, t.Audio = Qh, t.Models = rp;
+})(ht || (ht = {}));
+function FU(t) {
+  const e = t._getType();
+  switch (e) {
+    case "system":
+      return "system";
+    case "ai":
+      return "assistant";
+    case "human":
+      return "user";
+    case "function":
+      return "function";
+    case "tool":
+      return "tool";
+    default:
+      throw new Error(`Unknown message type: ${e}`);
+  }
+}
+function nP(t) {
+  return t.map((e) => {
+    if (typeof e.content != "string")
+      throw new Error("Non string message content not supported");
+    const n = {
+      role: FU(e),
+      content: e.content,
+      name: e.name,
+      function_call: e.additional_kwargs.function_call,
+      tool_calls: e.additional_kwargs.tool_calls,
+      tool_call_id: e.tool_call_id
+    };
+    return Vs(e) && e.tool_calls?.length ? n.tool_calls = e.tool_calls.map(__) : (e.additional_kwargs.tool_calls != null && (n.tool_calls = e.additional_kwargs.tool_calls), e.tool_call_id != null && (n.tool_call_id = e.tool_call_id)), n;
+  });
+}
+function DU(t, e) {
+  const n = t.tool_calls;
+  switch (t.role) {
+    case "assistant": {
+      const a = [], r = [];
+      for (const i of n ?? [])
+        try {
+          a.push(Hd(i, { returnId: !0 }));
+        } catch (s) {
+          r.push($p(i, s.message));
+        }
+      return new $t({
+        content: t.content || "",
+        additional_kwargs: { tool_calls: n },
+        tool_calls: a,
+        invalid_tool_calls: r,
+        usage_metadata: e
+      });
+    }
+    default:
+      return new yo(t.content || "", t.role ?? "unknown");
+  }
+}
+function qU(t, e) {
+  if (t?.length)
+    return t.map((n) => ({
+      id: n.id,
+      name: n.function?.name,
+      args: n.function?.arguments,
+      type: "tool_call_chunk",
+      index: e
+    }));
+}
+function JU(t, e, n) {
+  const { role: a } = t, r = t.content ?? "";
+  let i;
+  t.function_call ? i = {
+    function_call: t.function_call
+  } : t.tool_calls ? i = {
+    tool_calls: t.tool_calls
+  } : i = {};
+  let s, o;
+  if (n?.usage && (s = {
+    input_tokens: n.usage.prompt_tokens,
+    output_tokens: n.usage.completion_tokens,
+    total_tokens: n.usage.total_tokens
+  }, o = n.id), a === "user")
+    return {
+      message: new uc({ content: r })
+    };
+  if (a === "assistant") {
+    const l = qU(t.tool_calls, e);
+    return {
+      message: new Ze({
+        content: r,
+        additional_kwargs: i,
+        tool_call_chunks: l ? l.map((f) => ({
+          type: f.type,
+          args: f.args,
+          index: f.index
+        })) : void 0,
+        usage_metadata: s,
+        id: o
+      }),
+      toolCallData: l ? l.map((f) => ({
+        id: f.id ?? "",
+        name: f.name ?? "",
+        index: f.index ?? e,
+        type: "tool_call_chunk"
+      })) : void 0
+    };
+  } else return a === "system" ? {
+    message: new Hu({ content: r })
+  } : {
+    message: new oc({ content: r, role: a })
+  };
+}
+class WZ extends Sn {
+  static lc_name() {
+    return "ChatGroq";
+  }
+  _llmType() {
+    return "groq";
+  }
+  get lc_secrets() {
+    return {
+      apiKey: "GROQ_API_KEY"
+    };
+  }
+  constructor(e) {
+    super(e), Object.defineProperty(this, "lc_namespace", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: ["langchain", "chat_models", "groq"]
+    }), Object.defineProperty(this, "client", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "model", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "temperature", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: 0.7
+    }), Object.defineProperty(this, "stop", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "stopSequences", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "maxTokens", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "streaming", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: !1
+    }), Object.defineProperty(this, "apiKey", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "lc_serializable", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: !0
+    });
+    const n = e.apiKey || ft("GROQ_API_KEY");
+    if (!n)
+      throw new Error('Groq API key not found. Please set the GROQ_API_KEY environment variable or provide the key into "apiKey"');
+    const a = {
+      "User-Agent": "langchainjs",
+      ...e.defaultHeaders ?? {}
+    };
+    this.client = new ht({
+      apiKey: n,
+      dangerouslyAllowBrowser: !0,
+      baseURL: e.baseUrl,
+      timeout: e.timeout,
+      httpAgent: e.httpAgent,
+      fetch: e.fetch,
+      maxRetries: 0,
+      defaultHeaders: a,
+      defaultQuery: e.defaultQuery
+    }), this.apiKey = n, this.temperature = e.temperature ?? this.temperature, this.model = e.model, this.streaming = e.streaming ?? this.streaming, this.stop = e.stopSequences ?? (typeof e.stop == "string" ? [e.stop] : e.stop) ?? [], this.stopSequences = this.stop, this.maxTokens = e.maxTokens;
+  }
+  getLsParams(e) {
+    const n = this.invocationParams(e);
+    return {
+      ls_provider: "groq",
+      ls_model_name: this.model,
+      ls_model_type: "chat",
+      ls_temperature: n.temperature ?? this.temperature,
+      ls_max_tokens: n.max_tokens ?? this.maxTokens,
+      ls_stop: e.stop
+    };
+  }
+  async completionWithRetry(e, n) {
+    return this.caller.call(async () => this.client.chat.completions.create(e, n));
+  }
+  invocationParams(e) {
+    const n = super.invocationParams(e);
+    return e.tool_choice !== void 0 && (n.tool_choice = e.tool_choice), e.tools !== void 0 && (n.tools = e.tools), e.response_format !== void 0 && (n.response_format = e.response_format), {
+      ...n,
+      stop: e.stop ?? this.stopSequences,
+      model: this.model,
+      temperature: this.temperature,
+      max_tokens: this.maxTokens
+    };
+  }
+  bindTools(e, n) {
+    return this.bind({
+      tools: e.map((a) => $d(a)),
+      ...n
+    });
+  }
+  async *_streamResponseChunks(e, n, a) {
+    const r = this.invocationParams(n), i = nP(e), s = await this.completionWithRetry({
+      ...r,
+      messages: i,
+      stream: !0
+    }, {
+      signal: n?.signal,
+      headers: n?.headers
+    });
+    let o = "";
+    const l = [];
+    let f;
+    for await (const u of s) {
+      f = u;
+      const c = u?.choices[0];
+      if (!c)
+        continue;
+      c.delta?.role && (o = c.delta.role);
+      const { message: h, toolCallData: p } = JU({
+        ...c.delta,
+        role: o
+      }, c.index, u.x_groq);
+      if (p) {
+        const m = p.filter((b) => l.every((g) => g.id !== b.id));
+        l.push(...m), yield new Bt({
+          message: new Ze({
+            content: "",
+            tool_call_chunks: m
+          }),
+          text: ""
+        });
+      }
+      const d = new Bt({
+        message: h,
+        text: c.delta.content ?? "",
+        generationInfo: {
+          finishReason: c.finish_reason
+        }
+      });
+      yield d, a?.handleLLMNewToken(d.text ?? "");
+    }
+    if (f && ("choices" in f && delete f.choices, yield new Bt({
+      message: new Ze({
+        content: "",
+        response_metadata: f
+      }),
+      text: ""
+    })), n.signal?.aborted)
+      throw new Error("AbortError");
+  }
+  async _generate(e, n, a) {
+    if (this.streaming) {
+      const r = {}, i = this._streamResponseChunks(e, n, a), s = {};
+      for await (const l of i) {
+        const f = l.generationInfo?.completion ?? 0;
+        s[f] === void 0 ? s[f] = l : s[f] = s[f].concat(l);
+      }
+      return { generations: Object.entries(s).sort(([l], [f]) => parseInt(l, 10) - parseInt(f, 10)).map(([l, f]) => f), llmOutput: { estimatedTokenUsage: r } };
+    } else
+      return this._generateNonStreaming(e, n, a);
+  }
+  async _generateNonStreaming(e, n, a) {
+    const r = {}, i = this.invocationParams(n), s = nP(e), o = await this.completionWithRetry({
+      ...i,
+      stream: !1,
+      messages: s
+    }, {
+      signal: n?.signal,
+      headers: n?.headers
+    });
+    if ("usage" in o && o.usage) {
+      const { completion_tokens: f, prompt_tokens: u, total_tokens: c } = o.usage;
+      f && (r.completionTokens = (r.completionTokens ?? 0) + f), u && (r.promptTokens = (r.promptTokens ?? 0) + u), c && (r.totalTokens = (r.totalTokens ?? 0) + c);
+    }
+    const l = [];
+    if ("choices" in o && o.choices)
+      for (const f of o.choices) {
+        const u = f.message?.content ?? "";
+        let c;
+        r.totalTokens !== void 0 && (c = {
+          input_tokens: r.promptTokens ?? 0,
+          output_tokens: r.completionTokens ?? 0,
+          total_tokens: r.totalTokens
+        });
+        const h = {
+          text: u,
+          message: DU(f.message ?? { role: "assistant" }, c)
+        };
+        h.generationInfo = {
+          ...f.finish_reason ? { finish_reason: f.finish_reason } : {},
+          ...f.logprobs ? { logprobs: f.logprobs } : {}
+        }, l.push(h);
+      }
+    return {
+      generations: l,
+      llmOutput: { tokenUsage: r }
+    };
+  }
+  withStructuredOutput(e, n) {
+    const a = e, r = n?.name, i = n?.method, s = n?.includeRaw;
+    let o = r ?? "extract", l, f;
+    if (i === "jsonMode")
+      f = this.bind({
+        response_format: { type: "json_object" }
+      }), eu(a) ? l = Cd.fromZodSchema(a) : l = new Td();
+    else if (eu(a)) {
+      const p = Cn(a);
+      f = this.bind({
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: o,
+              description: p.description,
+              parameters: p
+            }
+          }
+        ],
+        tool_choice: {
+          type: "function",
+          function: {
+            name: o
+          }
+        }
+      }), l = new Yu({
+        returnSingle: !0,
+        keyName: o,
+        zodSchema: a
+      });
+    } else {
+      let p;
+      typeof a.name == "string" && typeof a.parameters == "object" && a.parameters != null ? (p = a, o = a.name) : (o = a.title ?? o, p = {
+        name: o,
+        description: a.description ?? "",
+        parameters: a
+      }), f = this.bind({
+        tools: [
+          {
+            type: "function",
+            function: p
+          }
+        ],
+        tool_choice: {
+          type: "function",
+          function: {
+            name: o
+          }
+        }
+      }), l = new Yu({
+        returnSingle: !0,
+        keyName: o
+      });
+    }
+    if (!s)
+      return f.pipe(l).withConfig({
+        runName: "ChatGroqStructuredOutput"
+      });
+    const u = Mt.assign({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      parsed: (p, d) => l.invoke(p.raw, d)
+    }), c = Mt.assign({
+      parsed: () => null
+    }), h = u.withFallbacks({
+      fallbacks: [c]
+    });
+    return dt.from([
+      {
+        raw: f
+      },
+      h
+    ]).withConfig({
+      runName: "ChatGroqStructuredOutput"
+    });
+  }
+}
+const Eu = "1.26.0";
+let rP = !1, nd, hM, wg, pM, mM, bM;
+function LU(t, e = { auto: !1 }) {
+  if (rP)
+    throw new Error(`you must \`import '@cerebras/cerebras_cloud_sdk/shims/${t.kind}'\` before importing anything else from @cerebras/cerebras_cloud_sdk`);
+  if (nd)
+    throw new Error(`can't \`import '@cerebras/cerebras_cloud_sdk/shims/${t.kind}'\` after \`import '@cerebras/cerebras_cloud_sdk/shims/${nd}'\``);
+  rP = e.auto, nd = t.kind, hM = t.fetch, wg = t.File, pM = t.ReadableStream, mM = t.getDefaultAgent, bM = t.fileFromPath;
+}
+class UU {
+  constructor(e) {
+    this.body = e;
+  }
+  get [Symbol.toStringTag]() {
+    return "MultipartBody";
+  }
+}
+function BU({ manuallyImported: t } = {}) {
+  const e = t ? "You may need to use polyfills" : "Add one of these imports before your first `import … from '@cerebras/cerebras_cloud_sdk'`:\n- `import '@cerebras/cerebras_cloud_sdk/shims/node'` (if you're running on Node)\n- `import '@cerebras/cerebras_cloud_sdk/shims/web'` (otherwise)\n";
+  let n, a, r, i;
+  try {
+    n = fetch, a = Request, r = Response, i = Headers;
+  } catch (s) {
+    throw new Error(`this environment is missing the following Web Fetch API type: ${s.message}. ${e}`);
+  }
+  return {
+    kind: "web",
+    fetch: n,
+    Request: a,
+    Response: r,
+    Headers: i,
+    FormData: (
+      // @ts-ignore
+      typeof FormData < "u" ? FormData : class {
+        // @ts-ignore
+        constructor() {
+          throw new Error(`file uploads aren't supported in this environment yet as 'FormData' is undefined. ${e}`);
+        }
+      }
+    ),
+    Blob: typeof Blob < "u" ? Blob : class {
+      constructor() {
+        throw new Error(`file uploads aren't supported in this environment yet as 'Blob' is undefined. ${e}`);
+      }
+    },
+    File: (
+      // @ts-ignore
+      typeof File < "u" ? File : class {
+        // @ts-ignore
+        constructor() {
+          throw new Error(`file uploads aren't supported in this environment yet as 'File' is undefined. ${e}`);
+        }
+      }
+    ),
+    ReadableStream: (
+      // @ts-ignore
+      typeof ReadableStream < "u" ? ReadableStream : class {
+        // @ts-ignore
+        constructor() {
+          throw new Error(`streaming isn't supported in this environment yet as 'ReadableStream' is undefined. ${e}`);
+        }
+      }
+    ),
+    getMultipartRequestOptions: async (s, o) => ({
+      ...o,
+      body: new UU(s)
+    }),
+    getDefaultAgent: (s) => {
+    },
+    fileFromPath: () => {
+      throw new Error("The `fileFromPath` function is only supported in Node. See the README for more details: https://www.github.com/Cerebras/cerebras-cloud-sdk-node#file-uploads");
+    },
+    isFsReadStream: (s) => !1
+  };
+}
+nd || LU(BU(), { auto: !0 });
+class la extends Error {
+}
+class Nt extends la {
+  constructor(e, n, a, r) {
+    super(`${Nt.makeMessage(e, n, a)}`), this.status = e, this.headers = r, this.error = n;
+  }
+  static makeMessage(e, n, a) {
+    const r = n?.message ? typeof n.message == "string" ? n.message : JSON.stringify(n.message) : n ? JSON.stringify(n) : a;
+    return e && r ? `${e} ${r}` : e ? `${e} status code (no body)` : r || "(no status code or body)";
+  }
+  static generate(e, n, a, r) {
+    if (e === void 0 || r === void 0)
+      return new zp({ message: a, cause: Sg(n) });
+    const i = n;
+    return e === 400 ? new _M(e, i, a, r) : e === 401 ? new yM(e, i, a, r) : e === 403 ? new wM(e, i, a, r) : e === 404 ? new vM(e, i, a, r) : e === 409 ? new SM(e, i, a, r) : e === 422 ? new OM(e, i, a, r) : e === 429 ? new jM(e, i, a, r) : e >= 500 ? new PM(e, i, a, r) : new Nt(e, i, a, r);
+  }
+}
+class vg extends Nt {
+  constructor({ message: e } = {}) {
+    super(void 0, void 0, e || "Request was aborted.", void 0);
+  }
+}
+class zp extends Nt {
+  constructor({ message: e, cause: n }) {
+    super(void 0, void 0, e || "Connection error.", void 0), n && (this.cause = n);
+  }
+}
+class gM extends zp {
+  constructor({ message: e } = {}) {
+    super({ message: e ?? "Request timed out." });
+  }
+}
+class _M extends Nt {
+}
+class yM extends Nt {
+}
+class wM extends Nt {
+}
+class vM extends Nt {
+}
+class SM extends Nt {
+}
+class OM extends Nt {
+}
+class jM extends Nt {
+}
+class PM extends Nt {
+}
+class qu {
+  constructor(e, n) {
+    this.iterator = e, this.controller = n;
+  }
+  static fromSSEResponse(e, n) {
+    let a = !1;
+    async function* r() {
+      if (a)
+        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
+      a = !0;
+      let i = !1;
+      try {
+        for await (const s of xU(e, n))
+          if (!i) {
+            if (s.data.startsWith("[DONE]")) {
+              i = !0;
+              continue;
+            }
+            if (s.event === null) {
+              let o;
+              try {
+                o = JSON.parse(s.data);
+              } catch (l) {
+                throw console.error("Could not parse message into JSON:", s.data), console.error("From chunk:", s.raw), l;
+              }
+              if (o && o.error) {
+                const l = o.status_code || 0;
+                throw Nt.generate(l, o.error, void 0, void 0);
+              }
+              yield o;
+            } else {
+              let o;
+              try {
+                o = JSON.parse(s.data);
+              } catch (l) {
+                throw console.error("Could not parse message into JSON:", s.data), console.error("From chunk:", s.raw), l;
+              }
+              if (s.event == "error") {
+                const l = o.status_code || 0;
+                throw Nt.generate(l, o.error, void 0, void 0);
+              }
+              yield { event: s.event, data: o };
+            }
+          }
+        i = !0;
+      } catch (s) {
+        if (s instanceof Error && s.name === "AbortError")
+          return;
+        throw s;
+      } finally {
+        i || n.abort();
+      }
+    }
+    return new qu(r, n);
+  }
+  /**
+   * Generates a Stream from a newline-separated ReadableStream
+   * where each item is a JSON value.
+   */
+  static fromReadableStream(e, n) {
+    let a = !1;
+    async function* r() {
+      const s = new tu(), o = RM(e);
+      for await (const l of o)
+        for (const f of s.decode(l))
+          yield f;
+      for (const l of s.flush())
+        yield l;
+    }
+    async function* i() {
+      if (a)
+        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
+      a = !0;
+      let s = !1;
+      try {
+        for await (const o of r())
+          s || o && (yield JSON.parse(o));
+        s = !0;
+      } catch (o) {
+        if (o instanceof Error && o.name === "AbortError")
+          return;
+        throw o;
+      } finally {
+        s || n.abort();
+      }
+    }
+    return new qu(i, n);
+  }
+  [Symbol.asyncIterator]() {
+    return this.iterator();
+  }
+  /**
+   * Splits the stream into two streams which can be
+   * independently read from at different speeds.
+   */
+  tee() {
+    const e = [], n = [], a = this.iterator(), r = (i) => ({
+      next: () => {
+        if (i.length === 0) {
+          const s = a.next();
+          e.push(s), n.push(s);
+        }
+        return i.shift();
+      }
+    });
+    return [
+      new qu(() => r(e), this.controller),
+      new qu(() => r(n), this.controller)
+    ];
+  }
+  /**
+   * Converts this stream to a newline-separated ReadableStream of
+   * JSON stringified values in the stream
+   * which can be turned back into a Stream with `Stream.fromReadableStream()`.
+   */
+  toReadableStream() {
+    const e = this;
+    let n;
+    const a = new TextEncoder();
+    return new pM({
+      async start() {
+        n = e[Symbol.asyncIterator]();
+      },
+      async pull(r) {
+        try {
+          const { value: i, done: s } = await n.next();
+          if (s)
+            return r.close();
+          const o = a.encode(JSON.stringify(i) + `
+`);
+          r.enqueue(o);
+        } catch (i) {
+          r.error(i);
+        }
+      },
+      async cancel() {
+        await n.return?.();
+      }
+    });
+  }
+}
+async function* xU(t, e) {
+  if (!t.body)
+    throw e.abort(), new la("Attempted to iterate over a response with no body");
+  const n = new ZU(), a = new tu(), r = RM(t.body);
+  for await (const i of VU(r))
+    for (const s of a.decode(i)) {
+      const o = n.decode(s);
+      o && (yield o);
+    }
+  for (const i of a.flush()) {
+    const s = n.decode(i);
+    s && (yield s);
+  }
+}
+async function* VU(t) {
+  let e = new Uint8Array();
+  for await (const n of t) {
+    if (n == null)
+      continue;
+    const a = n instanceof ArrayBuffer ? new Uint8Array(n) : typeof n == "string" ? new TextEncoder().encode(n) : n;
+    let r = new Uint8Array(e.length + a.length);
+    r.set(e), r.set(a, e.length), e = r;
+    let i;
+    for (; (i = zU(e)) !== -1; )
+      yield e.slice(0, i), e = e.slice(i);
+  }
+  e.length > 0 && (yield e);
+}
+function zU(t) {
+  for (let a = 0; a < t.length - 2; a++) {
+    if (t[a] === 10 && t[a + 1] === 10 || t[a] === 13 && t[a + 1] === 13)
+      return a + 2;
+    if (t[a] === 13 && t[a + 1] === 10 && a + 3 < t.length && t[a + 2] === 13 && t[a + 3] === 10)
+      return a + 4;
+  }
+  return -1;
+}
+class ZU {
+  constructor() {
+    this.event = null, this.data = [], this.chunks = [];
+  }
+  decode(e) {
+    if (e.endsWith("\r") && (e = e.substring(0, e.length - 1)), !e) {
+      if (!this.event && !this.data.length)
+        return null;
+      const i = {
+        event: this.event,
+        data: this.data.join(`
+`),
+        raw: this.chunks
+      };
+      return this.event = null, this.data = [], this.chunks = [], i;
+    }
+    if (this.chunks.push(e), e.startsWith(":"))
+      return null;
+    let [n, a, r] = KU(e, ":");
+    return r.startsWith(" ") && (r = r.substring(1)), n === "event" ? this.event = r : n === "data" && this.data.push(r), null;
+  }
+}
+class tu {
+  constructor() {
+    this.buffer = [], this.trailingCR = !1;
+  }
+  decode(e) {
+    let n = this.decodeText(e);
+    if (this.trailingCR && (n = "\r" + n, this.trailingCR = !1), n.endsWith("\r") && (this.trailingCR = !0, n = n.slice(0, -1)), !n)
+      return [];
+    const a = tu.NEWLINE_CHARS.has(n[n.length - 1] || "");
+    let r = n.split(tu.NEWLINE_REGEXP);
+    return a && r.pop(), r.length === 1 && !a ? (this.buffer.push(r[0]), []) : (this.buffer.length > 0 && (r = [this.buffer.join("") + r[0], ...r.slice(1)], this.buffer = []), a || (this.buffer = [r.pop() || ""]), r);
+  }
+  decodeText(e) {
+    if (e == null)
+      return "";
+    if (typeof e == "string")
+      return e;
+    if (typeof Ke < "u") {
+      if (e instanceof Ke)
+        return e.toString();
+      if (e instanceof Uint8Array)
+        return Ke.from(e).toString();
+      throw new la(`Unexpected: received non-Uint8Array (${e.constructor.name}) stream chunk in an environment with a global "Buffer" defined, which this library assumes to be Node. Please report this error.`);
+    }
+    if (typeof TextDecoder < "u") {
+      if (e instanceof Uint8Array || e instanceof ArrayBuffer)
+        return this.textDecoder ?? (this.textDecoder = new TextDecoder("utf8")), this.textDecoder.decode(e);
+      throw new la(`Unexpected: received non-Uint8Array/ArrayBuffer (${e.constructor.name}) in a web platform. Please report this error.`);
+    }
+    throw new la("Unexpected: neither Buffer nor TextDecoder are available as globals. Please report this error.");
+  }
+  flush() {
+    if (!this.buffer.length && !this.trailingCR)
+      return [];
+    const e = [this.buffer.join("")];
+    return this.buffer = [], this.trailingCR = !1, e;
+  }
+}
+tu.NEWLINE_CHARS = /* @__PURE__ */ new Set([`
+`, "\r"]);
+tu.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
+function KU(t, e) {
+  const n = t.indexOf(e);
+  return n !== -1 ? [t.substring(0, n), e, t.substring(n + e.length)] : [t, "", ""];
+}
+function RM(t) {
+  if (t[Symbol.asyncIterator])
+    return t;
+  const e = t.getReader();
+  return {
+    async next() {
+      try {
+        const n = await e.read();
+        return n?.done && e.releaseLock(), n;
+      } catch (n) {
+        throw e.releaseLock(), n;
+      }
+    },
+    async return() {
+      const n = e.cancel();
+      return e.releaseLock(), await n, { done: !0, value: void 0 };
+    },
+    [Symbol.asyncIterator]() {
+      return this;
+    }
+  };
+}
+const HU = (t) => t != null && typeof t == "object" && typeof t.url == "string" && typeof t.blob == "function", GU = (t) => t != null && typeof t == "object" && typeof t.name == "string" && typeof t.lastModified == "number" && Zp(t), Zp = (t) => t != null && typeof t == "object" && typeof t.size == "number" && typeof t.type == "string" && typeof t.text == "function" && typeof t.slice == "function" && typeof t.arrayBuffer == "function";
+async function WU(t, e, n) {
+  if (t = await t, GU(t))
+    return t;
+  if (HU(t)) {
+    const r = await t.blob();
+    e || (e = new URL(t.url).pathname.split(/[\\/]/).pop() ?? "unknown_file");
+    const i = Zp(r) ? [await r.arrayBuffer()] : [r];
+    return new wg(i, e, n);
+  }
+  const a = await XU(t);
+  if (e || (e = YU(t) ?? "unknown_file"), !n?.type) {
+    const r = a[0]?.type;
+    typeof r == "string" && (n = { ...n, type: r });
+  }
+  return new wg(a, e, n);
+}
+async function XU(t) {
+  let e = [];
+  if (typeof t == "string" || ArrayBuffer.isView(t) || // includes Uint8Array, Buffer, etc.
+  t instanceof ArrayBuffer)
+    e.push(t);
+  else if (Zp(t))
+    e.push(await t.arrayBuffer());
+  else if (eB(t))
+    for await (const n of t)
+      e.push(n);
+  else
+    throw new Error(`Unexpected data type: ${typeof t}; constructor: ${t?.constructor?.name}; props: ${QU(t)}`);
+  return e;
+}
+function QU(t) {
+  return `[${Object.getOwnPropertyNames(t).map((n) => `"${n}"`).join(", ")}]`;
+}
+function YU(t) {
+  return hb(t.name) || hb(t.filename) || // For fs.ReadStream
+  hb(t.path)?.split(/[\\/]/).pop();
+}
+const hb = (t) => {
+  if (typeof t == "string")
+    return t;
+  if (typeof Ke < "u" && t instanceof Ke)
+    return String(t);
+}, eB = (t) => t != null && typeof t == "object" && typeof t[Symbol.asyncIterator] == "function", aP = (t) => t && typeof t == "object" && t.body && t[Symbol.toStringTag] === "MultipartBody";
+async function CM(t) {
+  const { response: e } = t;
+  if (t.options.stream)
+    return Vo("response", e.status, e.url, e.headers, e.body), t.options.__streamClass ? t.options.__streamClass.fromSSEResponse(e, t.controller) : qu.fromSSEResponse(e, t.controller);
+  if (e.status === 204)
+    return null;
+  if (t.options.__binaryResponse)
+    return e;
+  const a = e.headers.get("content-type")?.split(";")[0]?.trim();
+  if (a?.includes("application/json") || a?.endsWith("+json")) {
+    const s = await e.json();
+    return Vo("response", e.status, e.url, e.headers, s), s;
+  }
+  const i = await e.text();
+  return Vo("response", e.status, e.url, e.headers, i), i;
+}
+class Kp extends Promise {
+  constructor(e, n = CM) {
+    super((a) => {
+      a(null);
+    }), this.responsePromise = e, this.parseResponse = n;
+  }
+  _thenUnwrap(e) {
+    return new Kp(this.responsePromise, async (n) => e(await this.parseResponse(n), n));
+  }
+  /**
+   * Gets the raw `Response` instance instead of parsing the response
+   * data.
+   *
+   * If you want to parse the response body but still get the `Response`
+   * instance, you can use {@link withResponse()}.
+   *
+   * 👋 Getting the wrong TypeScript type for `Response`?
+   * Try setting `"moduleResolution": "NodeNext"` if you can,
+   * or add one of these imports before your first `import … from '@cerebras/cerebras_cloud_sdk'`:
+   * - `import '@cerebras/cerebras_cloud_sdk/shims/node'` (if you're running on Node)
+   * - `import '@cerebras/cerebras_cloud_sdk/shims/web'` (otherwise)
+   */
+  asResponse() {
+    return this.responsePromise.then((e) => e.response);
+  }
+  /**
+   * Gets the parsed response data and the raw `Response` instance.
+   *
+   * If you just want to get the raw `Response` instance without parsing it,
+   * you can use {@link asResponse()}.
+   *
+   *
+   * 👋 Getting the wrong TypeScript type for `Response`?
+   * Try setting `"moduleResolution": "NodeNext"` if you can,
+   * or add one of these imports before your first `import … from '@cerebras/cerebras_cloud_sdk'`:
+   * - `import '@cerebras/cerebras_cloud_sdk/shims/node'` (if you're running on Node)
+   * - `import '@cerebras/cerebras_cloud_sdk/shims/web'` (otherwise)
+   */
+  async withResponse() {
+    const [e, n] = await Promise.all([this.parse(), this.asResponse()]);
+    return { data: e, response: n };
+  }
+  parse() {
+    return this.parsedPromise || (this.parsedPromise = this.responsePromise.then(this.parseResponse)), this.parsedPromise;
+  }
+  then(e, n) {
+    return this.parse().then(e, n);
+  }
+  catch(e) {
+    return this.parse().catch(e);
+  }
+  finally(e) {
+    return this.parse().finally(e);
+  }
+}
+class tB {
+  constructor({
+    baseURL: e,
+    maxRetries: n = 2,
+    timeout: a = 6e4,
+    // 1 minute
+    httpAgent: r,
+    fetch: i
+  }) {
+    this.baseURL = e, this.maxRetries = pb("maxRetries", n), this.timeout = pb("timeout", a), this.httpAgent = r, this.fetch = i ?? hM;
+  }
+  authHeaders(e) {
+    return {};
+  }
+  /**
+   * Override this to add your own default headers, for example:
+   *
+   *  {
+   *    ...super.defaultHeaders(),
+   *    Authorization: 'Bearer 123',
+   *  }
+   */
+  defaultHeaders(e) {
+    return {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "User-Agent": this.getUserAgent(),
+      ...oB(),
+      ...this.authHeaders(e)
+    };
+  }
+  /**
+   * Override this to add your own headers validation:
+   */
+  validateHeaders(e, n) {
+  }
+  defaultIdempotencyKey() {
+    return `stainless-node-retry-${fB()}`;
+  }
+  get(e, n) {
+    return this.methodRequest("get", e, n);
+  }
+  post(e, n) {
+    return this.methodRequest("post", e, n);
+  }
+  patch(e, n) {
+    return this.methodRequest("patch", e, n);
+  }
+  put(e, n) {
+    return this.methodRequest("put", e, n);
+  }
+  delete(e, n) {
+    return this.methodRequest("delete", e, n);
+  }
+  methodRequest(e, n, a) {
+    return this.request(Promise.resolve(a).then(async (r) => {
+      const i = r && Zp(r?.body) ? new DataView(await r.body.arrayBuffer()) : r?.body instanceof DataView ? r.body : r?.body instanceof ArrayBuffer ? new DataView(r.body) : r && ArrayBuffer.isView(r?.body) ? new DataView(r.body.buffer) : r?.body;
+      return { method: e, path: n, ...r, body: i };
+    }));
+  }
+  getAPIList(e, n, a) {
+    return this.requestAPIList(n, { method: "get", path: e, ...a });
+  }
+  calculateContentLength(e) {
+    if (typeof e == "string") {
+      if (typeof Ke < "u")
+        return Ke.byteLength(e, "utf8").toString();
+      if (typeof TextEncoder < "u")
+        return new TextEncoder().encode(e).length.toString();
+    } else if (ArrayBuffer.isView(e))
+      return e.byteLength.toString();
+    return null;
+  }
+  buildRequest(e, { retryCount: n = 0 } = {}) {
+    e = { ...e };
+    const { method: a, path: r, query: i, headers: s = {} } = e, o = ArrayBuffer.isView(e.body) || e.__binaryRequest && typeof e.body == "string" ? e.body : aP(e.body) ? e.body.body : e.body ? JSON.stringify(e.body, null, 2) : null, l = this.calculateContentLength(o), f = this.buildURL(r, i);
+    "timeout" in e && pb("timeout", e.timeout), e.timeout = e.timeout ?? this.timeout;
+    const u = e.httpAgent ?? this.httpAgent ?? mM(f), c = e.timeout + 1e3;
+    typeof u?.options?.timeout == "number" && c > (u.options.timeout ?? 0) && (u.options.timeout = c), this.idempotencyHeader && a !== "get" && (e.idempotencyKey || (e.idempotencyKey = this.defaultIdempotencyKey()), s[this.idempotencyHeader] = e.idempotencyKey);
+    const h = this.buildHeaders({ options: e, headers: s, contentLength: l, retryCount: n });
+    return { req: {
+      method: a,
+      ...o && { body: o },
+      headers: h,
+      ...u && { agent: u },
+      // @ts-ignore node-fetch uses a custom AbortSignal type that is
+      // not compatible with standard web types
+      signal: e.signal ?? null
+    }, url: f, timeout: e.timeout };
+  }
+  buildHeaders({ options: e, headers: n, contentLength: a, retryCount: r }) {
+    const i = {};
+    a && (i["content-length"] = a);
+    const s = this.defaultHeaders(e);
+    return lP(i, s), lP(i, n), aP(e.body) && nd !== "node" && delete i["content-type"], Yf(s, "x-stainless-retry-count") === void 0 && Yf(n, "x-stainless-retry-count") === void 0 && (i["x-stainless-retry-count"] = String(r)), Yf(s, "x-stainless-timeout") === void 0 && Yf(n, "x-stainless-timeout") === void 0 && e.timeout && (i["x-stainless-timeout"] = String(e.timeout)), this.validateHeaders(i, n), i;
+  }
+  /**
+   * Used as a callback for mutating the given `FinalRequestOptions` object.
+   */
+  async prepareOptions(e) {
+  }
+  /**
+   * Used as a callback for mutating the given `RequestInit` object.
+   *
+   * This is useful for cases where you want to add certain headers based off of
+   * the request properties, e.g. `method` or `url`.
+   */
+  async prepareRequest(e, { url: n, options: a }) {
+  }
+  parseHeaders(e) {
+    return e ? Symbol.iterator in e ? Object.fromEntries(Array.from(e).map((n) => [...n])) : { ...e } : {};
+  }
+  makeStatusError(e, n, a, r) {
+    return Nt.generate(e, n, a, r);
+  }
+  request(e, n = null) {
+    return new Kp(this.makeRequest(e, n));
+  }
+  async makeRequest(e, n) {
+    const a = await e, r = a.maxRetries ?? this.maxRetries;
+    n == null && (n = r), await this.prepareOptions(a);
+    const { req: i, url: s, timeout: o } = this.buildRequest(a, { retryCount: r - n });
+    if (await this.prepareRequest(i, { url: s, options: a }), Vo("request", s, a, i.headers), a.signal?.aborted)
+      throw new vg();
+    const l = new AbortController(), f = await this.fetchWithTimeout(s, i, o, l).catch(Sg);
+    if (f instanceof Error) {
+      if (a.signal?.aborted)
+        throw new vg();
+      if (n)
+        return this.retryRequest(a, n);
+      throw f.name === "AbortError" ? new gM() : new zp({ cause: f });
+    }
+    const u = rB(f.headers);
+    if (!f.ok) {
+      if (n && this.shouldRetry(f)) {
+        const b = `retrying, ${n} attempts remaining`;
+        return Vo(`response (error; ${b})`, f.status, s, u), this.retryRequest(a, n, u);
+      }
+      const c = await f.text().catch((b) => Sg(b).message), h = uB(c), p = h ? void 0 : c;
+      throw Vo(`response (error; ${n ? "(error; no more retries left)" : "(error; not retryable)"})`, f.status, s, u, p), this.makeStatusError(f.status, h, p, u);
+    }
+    return { response: f, options: a, controller: l };
+  }
+  requestAPIList(e, n) {
+    const a = this.makeRequest(n, null);
+    return new nB(this, a, e);
+  }
+  buildURL(e, n) {
+    const a = lB(e) ? new URL(e) : new URL(this.baseURL + (this.baseURL.endsWith("/") && e.startsWith("/") ? e.slice(1) : e)), r = this.defaultQuery();
+    return TM(r) || (n = { ...r, ...n }), typeof n == "object" && n && !Array.isArray(n) && (a.search = this.stringifyQuery(n)), a.toString();
+  }
+  stringifyQuery(e) {
+    return Object.entries(e).filter(([n, a]) => typeof a < "u").map(([n, a]) => {
+      if (typeof a == "string" || typeof a == "number" || typeof a == "boolean")
+        return `${encodeURIComponent(n)}=${encodeURIComponent(a)}`;
+      if (a === null)
+        return `${encodeURIComponent(n)}=`;
+      throw new la(`Cannot stringify type ${typeof a}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`);
+    }).join("&");
+  }
+  async fetchWithTimeout(e, n, a, r) {
+    const { signal: i, ...s } = n || {};
+    i && i.addEventListener("abort", () => r.abort());
+    const o = setTimeout(() => r.abort(), a), l = {
+      signal: r.signal,
+      ...s
+    };
+    return l.method && (l.method = l.method.toUpperCase()), // use undefined this binding; fetch errors if bound to something else in browser/cloudflare
+    this.fetch.call(void 0, e, l).finally(() => {
+      clearTimeout(o);
+    });
+  }
+  shouldRetry(e) {
+    const n = e.headers.get("x-should-retry");
+    return n === "true" ? !0 : n === "false" ? !1 : e.status === 408 || e.status === 409 || e.status === 429 || e.status >= 500;
+  }
+  async retryRequest(e, n, a) {
+    let r;
+    const i = a?.["retry-after-ms"];
+    if (i) {
+      const o = parseFloat(i);
+      Number.isNaN(o) || (r = o);
+    }
+    const s = a?.["retry-after"];
+    if (s && !r) {
+      const o = parseFloat(s);
+      Number.isNaN(o) ? r = Date.parse(s) - Date.now() : r = o * 1e3;
+    }
+    if (!(r && 0 <= r && r < 60 * 1e3)) {
+      const o = e.maxRetries ?? this.maxRetries;
+      r = this.calculateDefaultRetryTimeoutMillis(n, o);
+    }
+    return await dB(r), this.makeRequest(e, n - 1);
+  }
+  calculateDefaultRetryTimeoutMillis(e, n) {
+    const i = n - e, s = Math.min(0.5 * Math.pow(2, i), 8), o = 1 - Math.random() * 0.25;
+    return s * o * 1e3;
+  }
+  getUserAgent() {
+    return `${this.constructor.name}/JS ${Eu}`;
+  }
+}
+class nB extends Kp {
   constructor(e, n, a) {
-    db(this, "abortController"), db(this, "itr"), db(this, "doneCallback"), this.abortController = e, this.itr = n, this.doneCallback = a;
+    super(n, async (r) => new a(e, r.response, await CM(r), r.options));
+  }
+  /**
+   * Allow auto-paginating iteration on an unawaited list call, eg:
+   *
+   *    for await (const item of client.items.list()) {
+   *      console.log(item)
+   *    }
+   */
+  async *[Symbol.asyncIterator]() {
+    const e = await this;
+    for await (const n of e)
+      yield n;
+  }
+}
+const rB = (t) => new Proxy(Object.fromEntries(
+  // @ts-ignore
+  t.entries()
+), {
+  get(e, n) {
+    const a = n.toString();
+    return e[a.toLowerCase()] || e[a];
+  }
+}), aB = {
+  method: !0,
+  path: !0,
+  query: !0,
+  body: !0,
+  headers: !0,
+  maxRetries: !0,
+  stream: !0,
+  timeout: !0,
+  httpAgent: !0,
+  signal: !0,
+  idempotencyKey: !0,
+  __binaryRequest: !0,
+  __binaryResponse: !0,
+  __streamClass: !0
+}, iP = (t) => typeof t == "object" && t !== null && !TM(t) && Object.keys(t).every((e) => $M(aB, e)), iB = () => {
+  if (typeof Deno < "u" && Deno.build != null)
+    return {
+      "X-Stainless-Lang": "js",
+      "X-Stainless-Package-Version": Eu,
+      "X-Stainless-OS": oP(Deno.build.os),
+      "X-Stainless-Arch": sP(Deno.build.arch),
+      "X-Stainless-Runtime": "deno",
+      "X-Stainless-Runtime-Version": typeof Deno.version == "string" ? Deno.version : Deno.version?.deno ?? "unknown"
+    };
+  if (typeof EdgeRuntime < "u")
+    return {
+      "X-Stainless-Lang": "js",
+      "X-Stainless-Package-Version": Eu,
+      "X-Stainless-OS": "Unknown",
+      "X-Stainless-Arch": `other:${EdgeRuntime}`,
+      "X-Stainless-Runtime": "edge",
+      "X-Stainless-Runtime-Version": ue.version
+    };
+  if (Object.prototype.toString.call(typeof ue < "u" ? ue : 0) === "[object process]")
+    return {
+      "X-Stainless-Lang": "js",
+      "X-Stainless-Package-Version": Eu,
+      "X-Stainless-OS": oP(ue.platform),
+      "X-Stainless-Arch": sP(ue.arch),
+      "X-Stainless-Runtime": "node",
+      "X-Stainless-Runtime-Version": ue.version
+    };
+  const t = sB();
+  return t ? {
+    "X-Stainless-Lang": "js",
+    "X-Stainless-Package-Version": Eu,
+    "X-Stainless-OS": "Unknown",
+    "X-Stainless-Arch": "unknown",
+    "X-Stainless-Runtime": `browser:${t.browser}`,
+    "X-Stainless-Runtime-Version": t.version
+  } : {
+    "X-Stainless-Lang": "js",
+    "X-Stainless-Package-Version": Eu,
+    "X-Stainless-OS": "Unknown",
+    "X-Stainless-Arch": "unknown",
+    "X-Stainless-Runtime": "unknown",
+    "X-Stainless-Runtime-Version": "unknown"
+  };
+};
+function sB() {
+  if (typeof navigator > "u" || !navigator)
+    return null;
+  const t = [
+    { key: "edge", pattern: /Edge(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "ie", pattern: /MSIE(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "ie", pattern: /Trident(?:.*rv\:(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "chrome", pattern: /Chrome(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "firefox", pattern: /Firefox(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
+    { key: "safari", pattern: /(?:Version\W+(\d+)\.(\d+)(?:\.(\d+))?)?(?:\W+Mobile\S*)?\W+Safari/ }
+  ];
+  for (const { key: e, pattern: n } of t) {
+    const a = n.exec(navigator.userAgent);
+    if (a) {
+      const r = a[1] || 0, i = a[2] || 0, s = a[3] || 0;
+      return { browser: e, version: `${r}.${i}.${s}` };
+    }
+  }
+  return null;
+}
+const sP = (t) => t === "x32" ? "x32" : t === "x86_64" || t === "x64" ? "x64" : t === "arm" ? "arm" : t === "aarch64" || t === "arm64" ? "arm64" : t ? `other:${t}` : "unknown", oP = (t) => (t = t.toLowerCase(), t.includes("ios") ? "iOS" : t === "android" ? "Android" : t === "darwin" ? "MacOS" : t === "win32" ? "Windows" : t === "freebsd" ? "FreeBSD" : t === "openbsd" ? "OpenBSD" : t === "linux" ? "Linux" : t ? `Other:${t}` : "Unknown");
+let uP;
+const oB = () => uP ?? (uP = iB()), uB = (t) => {
+  try {
+    return JSON.parse(t);
+  } catch {
+    return;
+  }
+}, cB = /^[a-z][a-z0-9+.-]*:/i, lB = (t) => cB.test(t), dB = (t) => new Promise((e) => setTimeout(e, t)), pb = (t, e) => {
+  if (typeof e != "number" || !Number.isInteger(e))
+    throw new la(`${t} must be an integer`);
+  if (e < 0)
+    throw new la(`${t} must be a positive integer`);
+  return e;
+}, Sg = (t) => {
+  if (t instanceof Error)
+    return t;
+  if (typeof t == "object" && t !== null)
+    try {
+      return new Error(JSON.stringify(t));
+    } catch {
+    }
+  return new Error(t);
+}, cP = (t) => {
+  if (typeof ue < "u")
+    return ue.env?.[t]?.trim() ?? void 0;
+  if (typeof Deno < "u")
+    return Deno.env?.get?.(t)?.trim();
+};
+function TM(t) {
+  if (!t)
+    return !0;
+  for (const e in t)
+    return !1;
+  return !0;
+}
+function $M(t, e) {
+  return Object.prototype.hasOwnProperty.call(t, e);
+}
+function lP(t, e) {
+  for (const n in e) {
+    if (!$M(e, n))
+      continue;
+    const a = n.toLowerCase();
+    if (!a)
+      continue;
+    const r = e[n];
+    r === null ? delete t[a] : r !== void 0 && (t[a] = r);
+  }
+}
+function Vo(t, ...e) {
+  typeof ue < "u" && ue?.env?.DEBUG === "true" && console.log(`Cerebras:DEBUG:${t}`, ...e);
+}
+const fB = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (t) => {
+  const e = Math.random() * 16 | 0;
+  return (t === "x" ? e : e & 3 | 8).toString(16);
+}), hB = (t) => typeof t?.get == "function", Yf = (t, e) => {
+  const n = e.toLowerCase();
+  if (hB(t)) {
+    const a = e[0]?.toUpperCase() + e.substring(1).replace(/([^\w])(\w)/g, (r, i, s) => i + s.toUpperCase());
+    for (const r of [e, n, e.toUpperCase(), a]) {
+      const i = t.get(r);
+      if (i)
+        return i;
+    }
+  }
+  for (const [a, r] of Object.entries(t))
+    if (a.toLowerCase() === n)
+      return Array.isArray(r) ? (r.length <= 1 || console.warn(`Received ${r.length} entries for the ${e} header, using the first entry.`), r[0]) : r;
+};
+class Hp {
+  constructor(e) {
+    this._client = e;
+  }
+}
+let MM = class extends Hp {
+  create(e, n) {
+    const { "CF-RAY": a, "X-Amz-Cf-Id": r, "X-delay-time": i, ...s } = e;
+    return this._client.post("/v1/chat/completions", {
+      body: s,
+      ...n,
+      stream: s.stream ?? !1,
+      headers: {
+        ...a != null ? { "CF-RAY": a } : void 0,
+        ...r != null ? { "X-Amz-Cf-Id": r } : void 0,
+        ...i?.toString() != null ? { "X-delay-time": i?.toString() } : void 0,
+        ...n?.headers
+      }
+    });
+  }
+};
+class Y_ extends Hp {
+  constructor() {
+    super(...arguments), this.completions = new MM(this._client);
+  }
+}
+Y_.Completions = MM;
+class AM extends Hp {
+  create(e, n) {
+    const { "CF-RAY": a, "X-Amz-Cf-Id": r, "X-delay-time": i, ...s } = e;
+    return this._client.post("/v1/completions", {
+      body: s,
+      ...n,
+      stream: s.stream ?? !1,
+      headers: {
+        ...a != null ? { "CF-RAY": a } : void 0,
+        ...r != null ? { "X-Amz-Cf-Id": r } : void 0,
+        ...i?.toString() != null ? { "X-delay-time": i?.toString() } : void 0,
+        ...n?.headers
+      }
+    });
+  }
+}
+class EM extends Hp {
+  retrieve(e, n = {}, a) {
+    if (iP(n))
+      return this.retrieve(e, {}, n);
+    const { "CF-RAY": r, "X-Amz-Cf-Id": i } = n;
+    return this._client.get(`/v1/models/${e}`, {
+      ...a,
+      headers: {
+        ...r != null ? { "CF-RAY": r } : void 0,
+        ...i != null ? { "X-Amz-Cf-Id": i } : void 0,
+        ...a?.headers
+      }
+    });
+  }
+  list(e = {}, n) {
+    if (iP(e))
+      return this.list({}, e);
+    const { "CF-RAY": a, "X-Amz-Cf-Id": r } = e;
+    return this._client.get("/v1/models", {
+      ...n,
+      headers: {
+        ...a != null ? { "CF-RAY": a } : void 0,
+        ...r != null ? { "X-Amz-Cf-Id": r } : void 0,
+        ...n?.headers
+      }
+    });
+  }
+}
+var IM;
+class at extends tB {
+  /**
+   * API Client for interfacing with the Cerebras API.
+   *
+   * @param {string | undefined} [opts.apiKey=process.env['CEREBRAS_API_KEY'] ?? undefined]
+   * @param {string} [opts.baseURL=process.env['CEREBRAS_BASE_URL'] ?? https://api.cerebras.ai] - Override the default base URL for the API.
+   * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
+   * @param {number} [opts.httpAgent] - An HTTP agent used to manage HTTP(s) connections.
+   * @param {Core.Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
+   * @param {number} [opts.maxRetries=2] - The maximum number of times the client will retry a request.
+   * @param {Core.Headers} opts.defaultHeaders - Default headers to include with every request to the API.
+   * @param {Core.DefaultQuery} opts.defaultQuery - Default query parameters to include with every request to the API.
+   * @param {boolean | undefined} opts.warmTCPConnection - Whether to warm TCP connection in the constructor.
+   */
+  constructor({ baseURL: e = cP("CEREBRAS_BASE_URL"), apiKey: n = cP("CEREBRAS_API_KEY"), warmTCPConnection: a = !0, ...r } = {}) {
+    if (n === void 0)
+      throw new la("The CEREBRAS_API_KEY environment variable is missing or empty; either provide it, or instantiate the Cerebras client with an apiKey option, like new Cerebras({ apiKey: 'My API Key' }).");
+    const i = {
+      apiKey: n,
+      ...r,
+      baseURL: e || "https://api.cerebras.ai"
+    };
+    super({
+      baseURL: i.baseURL,
+      timeout: i.timeout ?? 6e4,
+      httpAgent: i.httpAgent,
+      maxRetries: i.maxRetries,
+      fetch: i.fetch
+    }), this.chat = new Y_(this), this.completions = new AM(this), this.models = new EM(this), this._options = i, this.apiKey = n, a && (async () => {
+      try {
+        await this.get("/v1/tcp_warming", {
+          timeout: 1e3,
+          maxRetries: 0
+        });
+      } catch (s) {
+        Vo(`TCP Warming had exception: ${s}`);
+      }
+    })();
+  }
+  defaultQuery() {
+    return this._options.defaultQuery;
+  }
+  defaultHeaders(e) {
+    return {
+      ...super.defaultHeaders(e),
+      ...this._options.defaultHeaders
+    };
+  }
+  authHeaders(e) {
+    return { Authorization: `Bearer ${this.apiKey}` };
+  }
+}
+IM = at;
+at.Cerebras = IM;
+at.DEFAULT_TIMEOUT = 6e4;
+at.CerebrasError = la;
+at.APIError = Nt;
+at.APIConnectionError = zp;
+at.APIConnectionTimeoutError = gM;
+at.APIUserAbortError = vg;
+at.NotFoundError = vM;
+at.ConflictError = SM;
+at.RateLimitError = jM;
+at.BadRequestError = _M;
+at.AuthenticationError = yM;
+at.InternalServerError = PM;
+at.PermissionDeniedError = wM;
+at.UnprocessableEntityError = OM;
+at.toFile = WU;
+at.fileFromPath = bM;
+at.Chat = Y_;
+at.Completions = AM;
+at.Models = EM;
+function dP(t) {
+  const e = t.match(/^data:.*?;base64,(.*)$/);
+  return e ? e[1] : "";
+}
+function pB(t) {
+  if (typeof t.content == "string")
+    return [
+      {
+        role: "assistant",
+        content: t.content
+      }
+    ];
+  const n = t.content.filter((r) => r.type === "text" && typeof r.text == "string").map((r) => ({
+    role: "assistant",
+    content: r.text
+  }));
+  let a;
+  if (t.content.find((r) => r.type === "tool_use") && t.tool_calls?.length) {
+    const r = t.tool_calls?.map((i) => ({
+      id: i.id,
+      type: "function",
+      function: {
+        name: i.name,
+        arguments: JSON.stringify(i.args)
+      }
+    }));
+    r && (a = {
+      role: "assistant",
+      tool_calls: r,
+      content: ""
+    });
+  } else if (t.content.find((r) => r.type === "tool_use") && !t.tool_calls?.length)
+    throw new Error("'tool_use' content type is not supported without tool calls.");
+  return [...n, ...a ? [a] : []];
+}
+function mB(t) {
+  return typeof t.content == "string" ? [
+    {
+      role: "user",
+      content: t.content
+    }
+  ] : t.content.map((e) => {
+    if (e.type === "text")
+      return {
+        role: "user",
+        content: e.text
+      };
+    if (e.type === "image_url") {
+      if (typeof e.image_url == "string")
+        return {
+          role: "user",
+          content: "",
+          images: [dP(e.image_url)]
+        };
+      if (e.image_url.url && typeof e.image_url.url == "string")
+        return {
+          role: "user",
+          content: "",
+          images: [dP(e.image_url.url)]
+        };
+    }
+    throw new Error(`Unsupported content type: ${e.type}`);
+  });
+}
+function bB(t) {
+  if (typeof t.content == "string")
+    return [
+      {
+        role: "system",
+        content: t.content
+      }
+    ];
+  if (t.content.every((e) => e.type === "text" && typeof e.text == "string"))
+    return t.content.map((e) => ({
+      role: "system",
+      content: e.text
+    }));
+  throw new Error(`Unsupported content type(s): ${t.content.map((e) => e.type).join(", ")}`);
+}
+function gB(t) {
+  if (typeof t.content != "string")
+    throw new Error("Non string tool message content is not supported");
+  return [
+    {
+      role: "tool",
+      content: t.content,
+      tool_call_id: t.tool_call_id
+    }
+  ];
+}
+function fP(t) {
+  return t.flatMap((e) => {
+    if (["human", "generic"].includes(e._getType()))
+      return mB(e);
+    if (e._getType() === "ai")
+      return pB(e);
+    if (e._getType() === "system")
+      return bB(e);
+    if (e._getType() === "tool")
+      return gB(e);
+    throw new Error(`Unsupported message type: ${e._getType()}`);
+  });
+}
+function _B(t) {
+  if (t)
+    return t === "any" || t === "required" ? "required" : t === "auto" ? "auto" : t === "none" ? "none" : typeof t == "string" ? {
+      type: "function",
+      function: {
+        name: t
+      }
+    } : t;
+}
+class nK extends Sn {
+  static lc_name() {
+    return "ChatCerebras";
+  }
+  get lc_secrets() {
+    return {
+      apiKey: "CEREBRAS_API_KEY"
+    };
+  }
+  get lc_aliases() {
+    return {
+      apiKey: "CEREBRAS_API_KEY"
+    };
+  }
+  getLsParams(e) {
+    const n = this.invocationParams(e);
+    return {
+      ls_provider: "cerebras",
+      ls_model_name: this.model,
+      ls_model_type: "chat",
+      ls_temperature: n.temperature ?? void 0,
+      ls_max_tokens: n.max_completion_tokens ?? void 0,
+      ls_stop: e.stop
+    };
+  }
+  constructor(e) {
+    super(e ?? {}), Object.defineProperty(this, "lc_serializable", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: !0
+    }), Object.defineProperty(this, "client", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "model", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "maxCompletionTokens", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "temperature", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "topP", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "seed", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), Object.defineProperty(this, "streaming", {
+      enumerable: !0,
+      configurable: !0,
+      writable: !0,
+      value: void 0
+    }), this.model = e.model, this.maxCompletionTokens = e.maxCompletionTokens, this.temperature = e.temperature, this.topP = e.topP, this.seed = e.seed, this.streaming = e.streaming, this.client = new at({
+      apiKey: e.apiKey ?? ft("CEREBRAS_API_KEY"),
+      timeout: e.timeout,
+      // Rely on built-in async caller
+      maxRetries: 0,
+      fetch: e.fetch
+    });
+  }
+  // Replace
+  _llmType() {
+    return "cerebras";
+  }
+  bindTools(e, n) {
+    return this.bind({
+      tools: e.map((a) => $d(a)),
+      ...n
+    });
+  }
+  /**
+   * A method that returns the parameters for an Ollama API call. It
+   * includes model and options parameters.
+   * @param options Optional parsed call options.
+   * @returns An object containing the parameters for an Ollama API call.
+   */
+  invocationParams(e) {
+    return {
+      model: this.model,
+      max_completion_tokens: this.maxCompletionTokens,
+      temperature: this.temperature,
+      top_p: this.topP,
+      seed: this.seed,
+      stop: e?.stop,
+      response_format: e?.response_format,
+      user: e?.user,
+      tools: e?.tools?.length ? e.tools.map((n) => $d(n)) : void 0,
+      tool_choice: _B(e?.tool_choice)
+    };
+  }
+  async _generate(e, n, a) {
+    if (this.streaming) {
+      let c;
+      for await (const p of this._streamResponseChunks(e, n, a))
+        c ? c = on(c, p.message) : c = p.message;
+      const h = new $t({
+        id: c?.id,
+        content: c?.content ?? "",
+        tool_calls: c?.tool_calls,
+        response_metadata: c?.response_metadata,
+        usage_metadata: c?.usage_metadata
+      });
+      return {
+        generations: [
+          {
+            text: typeof h.content == "string" ? h.content : "",
+            message: h
+          }
+        ]
+      };
+    }
+    const r = await this.caller.call(async () => await this.client.chat.completions.create({
+      ...this.invocationParams(n),
+      messages: fP(e),
+      stream: !1
+    }, {
+      headers: n.headers,
+      httpAgent: n.httpAgent
+    })), { choices: i, usage: s, ...o } = r, l = i[0], f = l?.message?.content ?? "", u = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      input_tokens: s?.prompt_tokens,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      output_tokens: s?.completion_tokens,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      total_tokens: s?.total_tokens
+    };
+    return {
+      generations: [
+        {
+          text: f,
+          message: new $t({
+            content: f,
+            tool_calls: l?.message?.tool_calls?.map(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (c) => ({
+                id: c.id,
+                name: c.function?.name,
+                args: JSON.parse(c.function?.arguments),
+                index: c.index,
+                type: "tool_call"
+              })
+            ),
+            usage_metadata: u,
+            response_metadata: o
+          })
+        }
+      ]
+    };
+  }
+  /**
+   * Implement to support streaming.
+   * Should yield chunks iteratively.
+   */
+  async *_streamResponseChunks(e, n, a) {
+    const r = await this.caller.call(async () => await this.client.chat.completions.create({
+      ...this.invocationParams(n),
+      messages: fP(e),
+      stream: !0
+    }, {
+      headers: n.headers,
+      httpAgent: n.httpAgent
+    }));
+    for await (const i of r) {
+      const { choices: s, system_fingerprint: o, model: l, id: f, object: u, usage: c, ...h } = i, p = s[0], d = p?.delta?.content ?? "";
+      let m;
+      c !== void 0 && (m = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        input_tokens: c.prompt_tokens,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        output_tokens: c.completion_tokens,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        total_tokens: c.total_tokens
+      });
+      const b = {};
+      p.finish_reason != null && (b.finish_reason = p.finish_reason, b.id = f, b.system_fingerprint = o, b.model = l, b.object = u);
+      const g = new Bt({
+        text: d,
+        message: new Ze({
+          content: d,
+          tool_call_chunks: p?.delta.tool_calls?.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (_) => ({
+              id: _.id,
+              name: _.function?.name,
+              args: _.function?.arguments,
+              index: _.index,
+              type: "tool_call_chunk"
+            })
+          ),
+          usage_metadata: m,
+          response_metadata: h
+        }),
+        generationInfo: b
+      });
+      yield g, await a?.handleLLMNewToken(d, void 0, void 0, void 0, void 0, { chunk: g });
+    }
+  }
+  withStructuredOutput(e, n) {
+    if (n?.strict)
+      throw new Error('"strict" mode is not supported for this model by default.');
+    const a = e, r = n?.name, i = a.description ?? "A function available to call.", s = n?.method, o = n?.includeRaw;
+    if (s === "jsonMode")
+      throw new Error('Cerebras withStructuredOutput implementation only supports "functionCalling" as a method.');
+    let l = r ?? "extract", f;
+    eu(a) ? f = [
+      {
+        type: "function",
+        function: {
+          name: l,
+          description: i,
+          parameters: Cn(a)
+        }
+      }
+    ] : ("name" in a && (l = a.name), f = [
+      {
+        type: "function",
+        function: {
+          name: l,
+          description: i,
+          parameters: a
+        }
+      }
+    ]);
+    const u = this.bindTools(f, {
+      tool_choice: f[0].function.name
+    }), c = au.from((m) => {
+      if (!m.tool_calls || m.tool_calls.length === 0)
+        throw new Error("No tool calls found in the response.");
+      const b = m.tool_calls.find((g) => g.name === l);
+      if (!b)
+        throw new Error(`No tool call found with name ${l}.`);
+      return b.args;
+    });
+    if (!o)
+      return u.pipe(c).withConfig({
+        runName: "ChatCerebrasStructuredOutput"
+      });
+    const h = Mt.assign({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      parsed: (m, b) => c.invoke(m.raw, b)
+    }), p = Mt.assign({
+      parsed: () => null
+    }), d = h.withFallbacks({
+      fallbacks: [p]
+    });
+    return dt.from([
+      {
+        raw: u
+      },
+      d
+    ]).withConfig({
+      runName: "ChatCerebrasStructuredOutput"
+    });
+  }
+}
+const yB = "0.5.14", NM = "11434", kM = `http://127.0.0.1:${NM}`;
+var wB = Object.defineProperty, vB = (t, e, n) => e in t ? wB(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n, mb = (t, e, n) => (vB(t, typeof e != "symbol" ? e + "" : e, n), n);
+class ey extends Error {
+  constructor(e, n) {
+    super(e), this.error = e, this.status_code = n, this.name = "ResponseError", Error.captureStackTrace && Error.captureStackTrace(this, ey);
+  }
+}
+class SB {
+  constructor(e, n, a) {
+    mb(this, "abortController"), mb(this, "itr"), mb(this, "doneCallback"), this.abortController = e, this.itr = n, this.doneCallback = a;
   }
   abort() {
     this.abortController.abort();
@@ -42575,7 +45371,7 @@ class hU {
     throw new Error("Did not receive done or success response in stream.");
   }
 }
-const Y_ = async (t) => {
+const ty = async (t) => {
   if (t.ok)
     return;
   let e = `Error ${t.status}: ${t.statusText}`, n = null;
@@ -42591,9 +45387,9 @@ const Y_ = async (t) => {
     } catch {
       console.log("Failed to get text from error response");
     }
-  throw new Q_(e, t.status);
+  throw new ey(e, t.status);
 };
-function pU() {
+function OB() {
   if (typeof window < "u" && window.navigator) {
     const t = navigator;
     return "userAgentData" in t && t.userAgentData?.platform ? `${t.userAgentData.platform.toLowerCase()} Browser/${navigator.userAgent};` : navigator.platform ? `${navigator.platform.toLowerCase()} Browser/${navigator.userAgent};` : `unknown Browser/${navigator.userAgent};`;
@@ -42601,7 +45397,7 @@ function pU() {
     return `${ue.arch} ${ue.platform} Node.js/${ue.version}`;
   return "";
 }
-function mU(t) {
+function jB(t) {
   if (t instanceof Headers) {
     const e = {};
     return t.forEach((n, a) => {
@@ -42609,13 +45405,13 @@ function mU(t) {
     }), e;
   } else return Array.isArray(t) ? Object.fromEntries(t) : t || {};
 }
-const ey = async (t, e, n = {}) => {
+const ny = async (t, e, n = {}) => {
   const a = {
     "Content-Type": "application/json",
     Accept: "application/json",
-    "User-Agent": `ollama-js/${lU} (${pU()})`
+    "User-Agent": `ollama-js/${yB} (${OB()})`
   };
-  n.headers = mU(n.headers);
+  n.headers = jB(n.headers);
   const r = Object.fromEntries(
     Object.entries(n.headers).filter(([i]) => !Object.keys(a).some((s) => s.toLowerCase() === i.toLowerCase()))
   );
@@ -42623,27 +45419,27 @@ const ey = async (t, e, n = {}) => {
     ...a,
     ...r
   }, t(e, n);
-}, Hj = async (t, e, n) => {
-  const a = await ey(t, e, {
+}, hP = async (t, e, n) => {
+  const a = await ny(t, e, {
     headers: n?.headers
   });
-  return await Y_(a), a;
+  return await ty(a), a;
 }, Su = async (t, e, n, a) => {
-  const i = ((o) => o !== null && typeof o == "object" && !Array.isArray(o))(n) ? JSON.stringify(n) : n, s = await ey(t, e, {
+  const i = ((o) => o !== null && typeof o == "object" && !Array.isArray(o))(n) ? JSON.stringify(n) : n, s = await ny(t, e, {
     method: "POST",
     body: i,
     signal: a?.signal,
     headers: a?.headers
   });
-  return await Y_(s), s;
-}, bU = async (t, e, n, a) => {
-  const r = await ey(t, e, {
+  return await ty(s), s;
+}, PB = async (t, e, n, a) => {
+  const r = await ny(t, e, {
     method: "DELETE",
     body: JSON.stringify(n),
     headers: a?.headers
   });
-  return await Y_(r), r;
-}, gU = async function* (t) {
+  return await ty(r), r;
+}, RB = async function* (t) {
   const e = new TextDecoder("utf-8");
   let n = "";
   const a = t.getReader();
@@ -42669,24 +45465,24 @@ const ey = async (t, e, n = {}) => {
     } catch {
       console.warn("invalid json: ", r);
     }
-}, _U = (t) => {
+}, CB = (t) => {
   if (!t)
-    return V$;
+    return kM;
   let e = t.includes("://");
   t.startsWith(":") && (t = `http://127.0.0.1${t}`, e = !0), e || (t = `http://${t}`);
   const n = new URL(t);
   let a = n.port;
-  a || (e ? a = n.protocol === "https:" ? "443" : "80" : a = x$);
+  a || (e ? a = n.protocol === "https:" ? "443" : "80" : a = NM);
   let r = `${n.protocol}//${n.hostname}:${a}${n.pathname}`;
   return r.endsWith("/") && (r = r.slice(0, -1)), r;
 };
-var yU = Object.defineProperty, wU = (t, e, n) => e in t ? yU(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n, fb = (t, e, n) => (wU(t, typeof e != "symbol" ? e + "" : e, n), n);
-let Vp = class {
+var TB = Object.defineProperty, $B = (t, e, n) => e in t ? TB(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n, bb = (t, e, n) => ($B(t, typeof e != "symbol" ? e + "" : e, n), n);
+let Gp = class {
   constructor(e) {
-    fb(this, "config"), fb(this, "fetch"), fb(this, "ongoingStreamedRequests", []), this.config = {
+    bb(this, "config"), bb(this, "fetch"), bb(this, "ongoingStreamedRequests", []), this.config = {
       host: "",
       headers: e?.headers
-    }, e?.proxy || (this.config.host = _U(e?.host ?? V$)), this.fetch = e?.fetch ?? fetch;
+    }, e?.proxy || (this.config.host = CB(e?.host ?? kM)), this.fetch = e?.fetch ?? fetch;
   }
   // Abort any ongoing streamed requests to Ollama
   abort() {
@@ -42715,7 +45511,7 @@ let Vp = class {
       });
       if (!s.body)
         throw new Error("Missing body");
-      const o = gU(s.body), l = new hU(
+      const o = RB(s.body), l = new SB(
         i,
         o,
         () => {
@@ -42815,7 +45611,7 @@ let Vp = class {
    * @returns {Promise<StatusResponse>} - The response object.
    */
   async delete(e) {
-    return await bU(
+    return await PB(
       this.fetch,
       `${this.config.host}/api/delete`,
       { name: e.model },
@@ -42839,7 +45635,7 @@ let Vp = class {
    * @throws {Error} - If the response body is missing.
    */
   async list() {
-    return await (await Hj(this.fetch, `${this.config.host}/api/tags`, {
+    return await (await hP(this.fetch, `${this.config.host}/api/tags`, {
       headers: this.config.headers
     })).json();
   }
@@ -42885,13 +45681,13 @@ let Vp = class {
    * @throws {Error} - If the response body is missing.
    */
   async ps() {
-    return await (await Hj(this.fetch, `${this.config.host}/api/ps`, {
+    return await (await hP(this.fetch, `${this.config.host}/api/ps`, {
       headers: this.config.headers
     })).json();
   }
 };
-new Vp();
-function Gj(t, e) {
+new Gp();
+function pP(t, e) {
   return new Ze({
     content: t.content ?? "",
     tool_call_chunks: t.tool_calls?.map((n) => ({
@@ -42905,11 +45701,11 @@ function Gj(t, e) {
     usage_metadata: e?.usageMetadata
   });
 }
-function Wj(t) {
+function mP(t) {
   const e = t.match(/^data:.*?;base64,(.*)$/);
   return e ? e[1] : "";
 }
-function vU(t) {
+function MB(t) {
   if (typeof t.content == "string")
     return [
       {
@@ -42940,7 +45736,7 @@ function vU(t) {
     throw new Error("'tool_use' content type is not supported without tool calls.");
   return [...n, ...a ? [a] : []];
 }
-function SU(t) {
+function AB(t) {
   return typeof t.content == "string" ? [
     {
       role: "user",
@@ -42957,19 +45753,19 @@ function SU(t) {
         return {
           role: "user",
           content: "",
-          images: [Wj(e.image_url)]
+          images: [mP(e.image_url)]
         };
       if (e.image_url.url && typeof e.image_url.url == "string")
         return {
           role: "user",
           content: "",
-          images: [Wj(e.image_url.url)]
+          images: [mP(e.image_url.url)]
         };
     }
     throw new Error(`Unsupported content type: ${e.type}`);
   });
 }
-function OU(t) {
+function EB(t) {
   if (typeof t.content == "string")
     return [
       {
@@ -42984,7 +45780,7 @@ function OU(t) {
     }));
   throw new Error(`Unsupported content type(s): ${t.content.map((e) => e.type).join(", ")}`);
 }
-function jU(t) {
+function IB(t) {
   if (typeof t.content != "string")
     throw new Error("Non string tool message content is not supported");
   return [
@@ -42994,20 +45790,20 @@ function jU(t) {
     }
   ];
 }
-function PU(t) {
+function NB(t) {
   return t.flatMap((e) => {
     if (["human", "generic"].includes(e._getType()))
-      return SU(e);
+      return AB(e);
     if (e._getType() === "ai")
-      return vU(e);
+      return MB(e);
     if (e._getType() === "system")
-      return OU(e);
+      return EB(e);
     if (e._getType() === "tool")
-      return jU(e);
+      return IB(e);
     throw new Error(`Unsupported message type: ${e._getType()}`);
   });
 }
-class CZ extends Sn {
+class aK extends Sn {
   // Used for tracing, replace with the same name as your class
   static lc_name() {
     return "ChatOllama";
@@ -43193,7 +45989,7 @@ class CZ extends Sn {
       configurable: !0,
       writable: !0,
       value: "http://127.0.0.1:11434"
-    }), this.client = new Vp({
+    }), this.client = new Gp({
       host: e?.baseUrl,
       headers: e?.headers
     }), this.baseUrl = e?.baseUrl ?? this.baseUrl, this.model = e?.model ?? this.model, this.numa = e?.numa, this.numCtx = e?.numCtx, this.numBatch = e?.numBatch, this.numGpu = e?.numGpu, this.mainGpu = e?.mainGpu, this.lowVram = e?.lowVram, this.f16Kv = e?.f16Kv, this.logitsAll = e?.logitsAll, this.vocabOnly = e?.vocabOnly, this.useMmap = e?.useMmap, this.useMlock = e?.useMlock, this.embeddingOnly = e?.embeddingOnly, this.numThread = e?.numThread, this.numKeep = e?.numKeep, this.seed = e?.seed, this.numPredict = e?.numPredict, this.topK = e?.topK, this.topP = e?.topP, this.tfsZ = e?.tfsZ, this.typicalP = e?.typicalP, this.repeatLastN = e?.repeatLastN, this.temperature = e?.temperature, this.repeatPenalty = e?.repeatPenalty, this.presencePenalty = e?.presencePenalty, this.frequencyPenalty = e?.frequencyPenalty, this.mirostat = e?.mirostat, this.mirostatTau = e?.mirostatTau, this.mirostatEta = e?.mirostatEta, this.penalizeNewline = e?.penalizeNewline, this.streaming = e?.streaming, this.format = e?.format, this.keepAlive = e?.keepAlive, this.checkOrPullModel = e?.checkOrPullModel ?? this.checkOrPullModel;
@@ -43326,7 +46122,7 @@ class CZ extends Sn {
     this.checkOrPullModel && (await this.checkModelExistsOnMachine(this.model) || await this.pull(this.model, {
       logProgress: !0
     }));
-    const r = this.invocationParams(n), i = PU(e), s = {
+    const r = this.invocationParams(n), i = NB(e), s = {
       input_tokens: 0,
       output_tokens: 0,
       total_tokens: 0
@@ -43340,7 +46136,7 @@ class CZ extends Sn {
       }), { message: u, ...c } = f;
       return s.input_tokens += c.prompt_eval_count ?? 0, s.output_tokens += c.eval_count ?? 0, s.total_tokens = s.input_tokens + s.output_tokens, yield new Bt({
         text: u.content,
-        message: Gj(u, {
+        message: pP(u, {
           responseMetadata: c,
           usageMetadata: s
         })
@@ -43357,7 +46153,7 @@ class CZ extends Sn {
       const { message: u, ...c } = f;
       s.input_tokens += c.prompt_eval_count ?? 0, s.output_tokens += c.eval_count ?? 0, s.total_tokens = s.input_tokens + s.output_tokens, l = c, yield new Bt({
         text: u.content ?? "",
-        message: Gj(u)
+        message: pP(u)
       }), await a?.handleLLMNewToken(u.content ?? "");
     }
     yield new Bt({
@@ -43394,7 +46190,7 @@ class CZ extends Sn {
       return super.withStructuredOutput(e, n);
   }
 }
-class TZ extends j_ {
+class iK extends j_ {
   constructor(e) {
     super({ maxConcurrency: 1, ...e }), Object.defineProperty(this, "model", {
       enumerable: !0,
@@ -43426,7 +46222,7 @@ class TZ extends j_ {
       configurable: !0,
       writable: !0,
       value: !1
-    }), this.client = new Vp({
+    }), this.client = new Gp({
       host: e?.baseUrl,
       headers: e?.headers ? new Headers(e.headers) : void 0
     }), this.baseUrl = e?.baseUrl ?? this.baseUrl, this.model = e?.model ?? this.model, this.keepAlive = e?.keepAlive, this.truncate = e?.truncate ?? this.truncate, this.requestOptions = e?.requestOptions ? this._convertOptions(e?.requestOptions) : void 0;
@@ -43491,7 +46287,7 @@ class TZ extends j_ {
     }))).embeddings;
   }
 }
-class $Z extends nq {
+class sK extends nq {
   static lc_name() {
     return "Ollama";
   }
@@ -43666,7 +46462,7 @@ class $Z extends nq {
       configurable: !0,
       writable: !0,
       value: void 0
-    }), this.model = e?.model ?? this.model, this.baseUrl = e?.baseUrl?.endsWith("/") ? e?.baseUrl.slice(0, -1) : e?.baseUrl ?? this.baseUrl, this.client = new Vp({
+    }), this.model = e?.model ?? this.model, this.baseUrl = e?.baseUrl?.endsWith("/") ? e?.baseUrl.slice(0, -1) : e?.baseUrl ?? this.baseUrl, this.client = new Gp({
       host: this.baseUrl,
       headers: e?.headers
     }), this.keepAlive = e?.keepAlive, this.embeddingOnly = e?.embeddingOnly, this.f16KV = e?.f16Kv, this.frequencyPenalty = e?.frequencyPenalty, this.logitsAll = e?.logitsAll, this.lowVram = e?.lowVram, this.mainGpu = e?.mainGpu, this.mirostat = e?.mirostat, this.mirostatEta = e?.mirostatEta, this.mirostatTau = e?.mirostatTau, this.numBatch = e?.numBatch, this.numCtx = e?.numCtx, this.numGpu = e?.numGpu, this.numKeep = e?.numKeep, this.numPredict = e?.numPredict, this.numThread = e?.numThread, this.penalizeNewline = e?.penalizeNewline, this.presencePenalty = e?.presencePenalty, this.repeatLastN = e?.repeatLastN, this.repeatPenalty = e?.repeatPenalty, this.temperature = e?.temperature, this.stop = e?.stop, this.tfsZ = e?.tfsZ, this.topK = e?.topK, this.topP = e?.topP, this.typicalP = e?.typicalP, this.useMLock = e?.useMlock, this.useMMap = e?.useMmap, this.vocabOnly = e?.vocabOnly, this.format = e?.format;
@@ -43747,2802 +46543,6 @@ class $Z extends nq {
     for await (const i of this._streamResponseChunks(e, n, a))
       r.push(i.text);
     return r.join("");
-  }
-}
-const Au = "0.5.0";
-let Xj = !1, td, z$, Z$, pg, K$, H$, G$, W$, X$;
-function RU(t, e = { auto: !1 }) {
-  if (Xj)
-    throw new Error(`you must \`import 'groq-sdk/shims/${t.kind}'\` before importing anything else from groq-sdk`);
-  if (td)
-    throw new Error(`can't \`import 'groq-sdk/shims/${t.kind}'\` after \`import 'groq-sdk/shims/${td}'\``);
-  Xj = e.auto, td = t.kind, z$ = t.fetch, Z$ = t.FormData, pg = t.File, K$ = t.ReadableStream, H$ = t.getMultipartRequestOptions, G$ = t.getDefaultAgent, W$ = t.fileFromPath, X$ = t.isFsReadStream;
-}
-let CU = class {
-  constructor(e) {
-    this.body = e;
-  }
-  get [Symbol.toStringTag]() {
-    return "MultipartBody";
-  }
-};
-function TU({ manuallyImported: t } = {}) {
-  const e = t ? "You may need to use polyfills" : "Add one of these imports before your first `import … from 'groq-sdk'`:\n- `import 'groq-sdk/shims/node'` (if you're running on Node)\n- `import 'groq-sdk/shims/web'` (otherwise)\n";
-  let n, a, r, i;
-  try {
-    n = fetch, a = Request, r = Response, i = Headers;
-  } catch (s) {
-    throw new Error(`this environment is missing the following Web Fetch API type: ${s.message}. ${e}`);
-  }
-  return {
-    kind: "web",
-    fetch: n,
-    Request: a,
-    Response: r,
-    Headers: i,
-    FormData: (
-      // @ts-ignore
-      typeof FormData < "u" ? FormData : class {
-        // @ts-ignore
-        constructor() {
-          throw new Error(`file uploads aren't supported in this environment yet as 'FormData' is undefined. ${e}`);
-        }
-      }
-    ),
-    Blob: typeof Blob < "u" ? Blob : class {
-      constructor() {
-        throw new Error(`file uploads aren't supported in this environment yet as 'Blob' is undefined. ${e}`);
-      }
-    },
-    File: (
-      // @ts-ignore
-      typeof File < "u" ? File : class {
-        // @ts-ignore
-        constructor() {
-          throw new Error(`file uploads aren't supported in this environment yet as 'File' is undefined. ${e}`);
-        }
-      }
-    ),
-    ReadableStream: (
-      // @ts-ignore
-      typeof ReadableStream < "u" ? ReadableStream : class {
-        // @ts-ignore
-        constructor() {
-          throw new Error(`streaming isn't supported in this environment yet as 'ReadableStream' is undefined. ${e}`);
-        }
-      }
-    ),
-    getMultipartRequestOptions: async (s, o) => ({
-      ...o,
-      body: new CU(s)
-    }),
-    getDefaultAgent: (s) => {
-    },
-    fileFromPath: () => {
-      throw new Error("The `fileFromPath` function is only supported in Node. See the README for more details: https://www.github.com/groq/groq-typescript#file-uploads");
-    },
-    isFsReadStream: (s) => !1
-  };
-}
-td || RU(TU(), { auto: !0 });
-class br extends Error {
-}
-let En = class mg extends br {
-  constructor(e, n, a, r) {
-    super(`${mg.makeMessage(e, n, a)}`), this.status = e, this.headers = r, this.error = n;
-  }
-  static makeMessage(e, n, a) {
-    const r = n?.message ? typeof n.message == "string" ? n.message : JSON.stringify(n.message) : n ? JSON.stringify(n) : a;
-    return e && r ? `${e} ${r}` : e ? `${e} status code (no body)` : r || "(no status code or body)";
-  }
-  static generate(e, n, a, r) {
-    if (!e)
-      return new zp({ cause: yg(n) });
-    const i = n;
-    return e === 400 ? new Y$(e, i, a, r) : e === 401 ? new eM(e, i, a, r) : e === 403 ? new tM(e, i, a, r) : e === 404 ? new nM(e, i, a, r) : e === 409 ? new rM(e, i, a, r) : e === 422 ? new aM(e, i, a, r) : e === 429 ? new iM(e, i, a, r) : e >= 500 ? new sM(e, i, a, r) : new mg(e, i, a, r);
-  }
-}, bg = class extends En {
-  constructor({ message: e } = {}) {
-    super(void 0, void 0, e || "Request was aborted.", void 0), this.status = void 0;
-  }
-}, zp = class extends En {
-  constructor({ message: e, cause: n }) {
-    super(void 0, void 0, e || "Connection error.", void 0), this.status = void 0, n && (this.cause = n);
-  }
-}, Q$ = class extends zp {
-  constructor({ message: e } = {}) {
-    super({ message: e ?? "Request timed out." });
-  }
-}, Y$ = class extends En {
-  constructor() {
-    super(...arguments), this.status = 400;
-  }
-}, eM = class extends En {
-  constructor() {
-    super(...arguments), this.status = 401;
-  }
-}, tM = class extends En {
-  constructor() {
-    super(...arguments), this.status = 403;
-  }
-}, nM = class extends En {
-  constructor() {
-    super(...arguments), this.status = 404;
-  }
-}, rM = class extends En {
-  constructor() {
-    super(...arguments), this.status = 409;
-  }
-}, aM = class extends En {
-  constructor() {
-    super(...arguments), this.status = 422;
-  }
-}, iM = class extends En {
-  constructor() {
-    super(...arguments), this.status = 429;
-  }
-}, sM = class extends En {
-}, $U = class zl {
-  constructor(e, n) {
-    this.iterator = e, this.controller = n;
-  }
-  static fromSSEResponse(e, n) {
-    let a = !1;
-    const r = new MU();
-    async function* i() {
-      if (!e.body)
-        throw n.abort(), new br("Attempted to iterate over a response with no body");
-      const o = new Gh(), l = Qj(e.body);
-      for await (const f of l)
-        for (const u of o.decode(f)) {
-          const c = r.decode(u);
-          c && (yield c);
-        }
-      for (const f of o.flush()) {
-        const u = r.decode(f);
-        u && (yield u);
-      }
-    }
-    async function* s() {
-      if (a)
-        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      a = !0;
-      let o = !1;
-      try {
-        for await (const l of i())
-          if (!o) {
-            if (l.data.startsWith("[DONE]")) {
-              o = !0;
-              continue;
-            }
-            if (l.event === null) {
-              let f;
-              try {
-                f = JSON.parse(l.data);
-              } catch (u) {
-                throw console.error("Could not parse message into JSON:", l.data), console.error("From chunk:", l.raw), u;
-              }
-              if (f && f.error)
-                throw new En(void 0, f.error, void 0, void 0);
-              yield f;
-            }
-          }
-        o = !0;
-      } catch (l) {
-        if (l instanceof Error && l.name === "AbortError")
-          return;
-        throw l;
-      } finally {
-        o || n.abort();
-      }
-    }
-    return new zl(s, n);
-  }
-  /**
-   * Generates a Stream from a newline-separated ReadableStream
-   * where each item is a JSON value.
-   */
-  static fromReadableStream(e, n) {
-    let a = !1;
-    async function* r() {
-      const s = new Gh(), o = Qj(e);
-      for await (const l of o)
-        for (const f of s.decode(l))
-          yield f;
-      for (const l of s.flush())
-        yield l;
-    }
-    async function* i() {
-      if (a)
-        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      a = !0;
-      let s = !1;
-      try {
-        for await (const o of r())
-          s || o && (yield JSON.parse(o));
-        s = !0;
-      } catch (o) {
-        if (o instanceof Error && o.name === "AbortError")
-          return;
-        throw o;
-      } finally {
-        s || n.abort();
-      }
-    }
-    return new zl(i, n);
-  }
-  [Symbol.asyncIterator]() {
-    return this.iterator();
-  }
-  /**
-   * Splits the stream into two streams which can be
-   * independently read from at different speeds.
-   */
-  tee() {
-    const e = [], n = [], a = this.iterator(), r = (i) => ({
-      next: () => {
-        if (i.length === 0) {
-          const s = a.next();
-          e.push(s), n.push(s);
-        }
-        return i.shift();
-      }
-    });
-    return [
-      new zl(() => r(e), this.controller),
-      new zl(() => r(n), this.controller)
-    ];
-  }
-  /**
-   * Converts this stream to a newline-separated ReadableStream of
-   * JSON stringified values in the stream
-   * which can be turned back into a Stream with `Stream.fromReadableStream()`.
-   */
-  toReadableStream() {
-    const e = this;
-    let n;
-    const a = new TextEncoder();
-    return new K$({
-      async start() {
-        n = e[Symbol.asyncIterator]();
-      },
-      async pull(r) {
-        try {
-          const { value: i, done: s } = await n.next();
-          if (s)
-            return r.close();
-          const o = a.encode(JSON.stringify(i) + `
-`);
-          r.enqueue(o);
-        } catch (i) {
-          r.error(i);
-        }
-      },
-      async cancel() {
-        await n.return?.();
-      }
-    });
-  }
-}, MU = class {
-  constructor() {
-    this.event = null, this.data = [], this.chunks = [];
-  }
-  decode(e) {
-    if (e.endsWith("\r") && (e = e.substring(0, e.length - 1)), !e) {
-      if (!this.event && !this.data.length)
-        return null;
-      const i = {
-        event: this.event,
-        data: this.data.join(`
-`),
-        raw: this.chunks
-      };
-      return this.event = null, this.data = [], this.chunks = [], i;
-    }
-    if (this.chunks.push(e), e.startsWith(":"))
-      return null;
-    let [n, a, r] = AU(e, ":");
-    return r.startsWith(" ") && (r = r.substring(1)), n === "event" ? this.event = r : n === "data" && this.data.push(r), null;
-  }
-}, Gh = class gg {
-  constructor() {
-    this.buffer = [], this.trailingCR = !1;
-  }
-  decode(e) {
-    let n = this.decodeText(e);
-    if (this.trailingCR && (n = "\r" + n, this.trailingCR = !1), n.endsWith("\r") && (this.trailingCR = !0, n = n.slice(0, -1)), !n)
-      return [];
-    const a = gg.NEWLINE_CHARS.has(n[n.length - 1] || "");
-    let r = n.split(gg.NEWLINE_REGEXP);
-    return r.length === 1 && !a ? (this.buffer.push(r[0]), []) : (this.buffer.length > 0 && (r = [this.buffer.join("") + r[0], ...r.slice(1)], this.buffer = []), a || (this.buffer = [r.pop() || ""]), r);
-  }
-  decodeText(e) {
-    if (e == null)
-      return "";
-    if (typeof e == "string")
-      return e;
-    if (typeof Ke < "u") {
-      if (e instanceof Ke)
-        return e.toString();
-      if (e instanceof Uint8Array)
-        return Ke.from(e).toString();
-      throw new br(`Unexpected: received non-Uint8Array (${e.constructor.name}) stream chunk in an environment with a global "Buffer" defined, which this library assumes to be Node. Please report this error.`);
-    }
-    if (typeof TextDecoder < "u") {
-      if (e instanceof Uint8Array || e instanceof ArrayBuffer)
-        return this.textDecoder ?? (this.textDecoder = new TextDecoder("utf8")), this.textDecoder.decode(e);
-      throw new br(`Unexpected: received non-Uint8Array/ArrayBuffer (${e.constructor.name}) in a web platform. Please report this error.`);
-    }
-    throw new br("Unexpected: neither Buffer nor TextDecoder are available as globals. Please report this error.");
-  }
-  flush() {
-    if (!this.buffer.length && !this.trailingCR)
-      return [];
-    const e = [this.buffer.join("")];
-    return this.buffer = [], this.trailingCR = !1, e;
-  }
-};
-Gh.NEWLINE_CHARS = /* @__PURE__ */ new Set([`
-`, "\r", "\v", "\f", "", "", "", "", "\u2028", "\u2029"]);
-Gh.NEWLINE_REGEXP = /\r\n|[\n\r\x0b\x0c\x1c\x1d\x1e\x85\u2028\u2029]/g;
-function AU(t, e) {
-  const n = t.indexOf(e);
-  return n !== -1 ? [t.substring(0, n), e, t.substring(n + e.length)] : [t, "", ""];
-}
-function Qj(t) {
-  if (t[Symbol.asyncIterator])
-    return t;
-  const e = t.getReader();
-  return {
-    async next() {
-      try {
-        const n = await e.read();
-        return n?.done && e.releaseLock(), n;
-      } catch (n) {
-        throw e.releaseLock(), n;
-      }
-    },
-    async return() {
-      const n = e.cancel();
-      return e.releaseLock(), await n, { done: !0, value: void 0 };
-    },
-    [Symbol.asyncIterator]() {
-      return this;
-    }
-  };
-}
-const oM = (t) => t != null && typeof t == "object" && typeof t.url == "string" && typeof t.blob == "function", uM = (t) => t != null && typeof t == "object" && typeof t.name == "string" && typeof t.lastModified == "number" && ty(t), ty = (t) => t != null && typeof t == "object" && typeof t.size == "number" && typeof t.type == "string" && typeof t.text == "function" && typeof t.slice == "function" && typeof t.arrayBuffer == "function", EU = (t) => uM(t) || oM(t) || X$(t);
-async function cM(t, e, n) {
-  if (t = await t, n ?? (n = uM(t) ? { lastModified: t.lastModified, type: t.type } : {}), oM(t)) {
-    const r = await t.blob();
-    return e || (e = new URL(t.url).pathname.split(/[\\/]/).pop() ?? "unknown_file"), new pg([r], e, n);
-  }
-  const a = await IU(t);
-  if (e || (e = kU(t) ?? "unknown_file"), !n.type) {
-    const r = a[0]?.type;
-    typeof r == "string" && (n = { ...n, type: r });
-  }
-  return new pg(a, e, n);
-}
-async function IU(t) {
-  let e = [];
-  if (typeof t == "string" || ArrayBuffer.isView(t) || // includes Uint8Array, Buffer, etc.
-  t instanceof ArrayBuffer)
-    e.push(t);
-  else if (ty(t))
-    e.push(await t.arrayBuffer());
-  else if (FU(t))
-    for await (const n of t)
-      e.push(n);
-  else
-    throw new Error(`Unexpected data type: ${typeof t}; constructor: ${t?.constructor?.name}; props: ${NU(t)}`);
-  return e;
-}
-function NU(t) {
-  return `[${Object.getOwnPropertyNames(t).map((n) => `"${n}"`).join(", ")}]`;
-}
-function kU(t) {
-  return hb(t.name) || hb(t.filename) || // For fs.ReadStream
-  hb(t.path)?.split(/[\\/]/).pop();
-}
-const hb = (t) => {
-  if (typeof t == "string")
-    return t;
-  if (typeof Ke < "u" && t instanceof Ke)
-    return String(t);
-}, FU = (t) => t != null && typeof t == "object" && typeof t[Symbol.asyncIterator] == "function", Yj = (t) => t && typeof t == "object" && t.body && t[Symbol.toStringTag] === "MultipartBody", lM = async (t) => {
-  const e = await DU(t.body);
-  return H$(e, t);
-}, DU = async (t) => {
-  const e = new Z$();
-  return await Promise.all(Object.entries(t || {}).map(([n, a]) => _g(e, n, a))), e;
-}, _g = async (t, e, n) => {
-  if (n !== void 0) {
-    if (n == null)
-      throw new TypeError(`Received null for "${e}"; to pass null in FormData, you must use the string 'null'`);
-    if (typeof n == "string" || typeof n == "number" || typeof n == "boolean")
-      t.append(e, String(n));
-    else if (EU(n)) {
-      const a = await cM(n);
-      t.append(e, a);
-    } else if (Array.isArray(n))
-      await Promise.all(n.map((a) => _g(t, e + "[]", a)));
-    else if (typeof n == "object")
-      await Promise.all(Object.entries(n).map(([a, r]) => _g(t, `${e}[${a}]`, r)));
-    else
-      throw new TypeError(`Invalid value given to form, expected a string, number, boolean, object, Array, File or Blob but got ${n} instead`);
-  }
-};
-async function dM(t) {
-  const { response: e } = t;
-  if (t.options.stream)
-    return Zu("response", e.status, e.url, e.headers, e.body), t.options.__streamClass ? t.options.__streamClass.fromSSEResponse(e, t.controller) : $U.fromSSEResponse(e, t.controller);
-  if (e.status === 204)
-    return null;
-  if (t.options.__binaryResponse)
-    return e;
-  const n = e.headers.get("content-type");
-  if (n?.includes("application/json") || n?.includes("application/vnd.api+json")) {
-    const i = await e.json();
-    return Zu("response", e.status, e.url, e.headers, i), i;
-  }
-  const r = await e.text();
-  return Zu("response", e.status, e.url, e.headers, r), r;
-}
-let fM = class hM extends Promise {
-  constructor(e, n = dM) {
-    super((a) => {
-      a(null);
-    }), this.responsePromise = e, this.parseResponse = n;
-  }
-  _thenUnwrap(e) {
-    return new hM(this.responsePromise, async (n) => e(await this.parseResponse(n)));
-  }
-  /**
-   * Gets the raw `Response` instance instead of parsing the response
-   * data.
-   *
-   * If you want to parse the response body but still get the `Response`
-   * instance, you can use {@link withResponse()}.
-   *
-   * 👋 Getting the wrong TypeScript type for `Response`?
-   * Try setting `"moduleResolution": "NodeNext"` if you can,
-   * or add one of these imports before your first `import … from 'groq-sdk'`:
-   * - `import 'groq-sdk/shims/node'` (if you're running on Node)
-   * - `import 'groq-sdk/shims/web'` (otherwise)
-   */
-  asResponse() {
-    return this.responsePromise.then((e) => e.response);
-  }
-  /**
-   * Gets the parsed response data and the raw `Response` instance.
-   *
-   * If you just want to get the raw `Response` instance without parsing it,
-   * you can use {@link asResponse()}.
-   *
-   *
-   * 👋 Getting the wrong TypeScript type for `Response`?
-   * Try setting `"moduleResolution": "NodeNext"` if you can,
-   * or add one of these imports before your first `import … from 'groq-sdk'`:
-   * - `import 'groq-sdk/shims/node'` (if you're running on Node)
-   * - `import 'groq-sdk/shims/web'` (otherwise)
-   */
-  async withResponse() {
-    const [e, n] = await Promise.all([this.parse(), this.asResponse()]);
-    return { data: e, response: n };
-  }
-  parse() {
-    return this.parsedPromise || (this.parsedPromise = this.responsePromise.then(this.parseResponse)), this.parsedPromise;
-  }
-  then(e, n) {
-    return this.parse().then(e, n);
-  }
-  catch(e) {
-    return this.parse().catch(e);
-  }
-  finally(e) {
-    return this.parse().finally(e);
-  }
-}, qU = class {
-  constructor({
-    baseURL: e,
-    maxRetries: n = 2,
-    timeout: a = 6e4,
-    // 1 minute
-    httpAgent: r,
-    fetch: i
-  }) {
-    this.baseURL = e, this.maxRetries = pb("maxRetries", n), this.timeout = pb("timeout", a), this.httpAgent = r, this.fetch = i ?? z$;
-  }
-  authHeaders(e) {
-    return {};
-  }
-  /**
-   * Override this to add your own default headers, for example:
-   *
-   *  {
-   *    ...super.defaultHeaders(),
-   *    Authorization: 'Bearer 123',
-   *  }
-   */
-  defaultHeaders(e) {
-    return {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "User-Agent": this.getUserAgent(),
-      ...xU(),
-      ...this.authHeaders(e)
-    };
-  }
-  /**
-   * Override this to add your own headers validation:
-   */
-  validateHeaders(e, n) {
-  }
-  defaultIdempotencyKey() {
-    return `stainless-node-retry-${WU()}`;
-  }
-  get(e, n) {
-    return this.methodRequest("get", e, n);
-  }
-  post(e, n) {
-    return this.methodRequest("post", e, n);
-  }
-  patch(e, n) {
-    return this.methodRequest("patch", e, n);
-  }
-  put(e, n) {
-    return this.methodRequest("put", e, n);
-  }
-  delete(e, n) {
-    return this.methodRequest("delete", e, n);
-  }
-  methodRequest(e, n, a) {
-    return this.request(Promise.resolve(a).then(async (r) => {
-      const i = r && ty(r?.body) ? new DataView(await r.body.arrayBuffer()) : r?.body instanceof DataView ? r.body : r?.body instanceof ArrayBuffer ? new DataView(r.body) : r && ArrayBuffer.isView(r?.body) ? new DataView(r.body.buffer) : r?.body;
-      return { method: e, path: n, ...r, body: i };
-    }));
-  }
-  getAPIList(e, n, a) {
-    return this.requestAPIList(n, { method: "get", path: e, ...a });
-  }
-  calculateContentLength(e) {
-    if (typeof e == "string") {
-      if (typeof Ke < "u")
-        return Ke.byteLength(e, "utf8").toString();
-      if (typeof TextEncoder < "u")
-        return new TextEncoder().encode(e).length.toString();
-    } else if (ArrayBuffer.isView(e))
-      return e.byteLength.toString();
-    return null;
-  }
-  buildRequest(e) {
-    const { method: n, path: a, query: r, headers: i = {} } = e, s = ArrayBuffer.isView(e.body) || e.__binaryRequest && typeof e.body == "string" ? e.body : Yj(e.body) ? e.body.body : e.body ? JSON.stringify(e.body, null, 2) : null, o = this.calculateContentLength(s), l = this.buildURL(a, r);
-    "timeout" in e && pb("timeout", e.timeout);
-    const f = e.timeout ?? this.timeout, u = e.httpAgent ?? this.httpAgent ?? G$(l), c = f + 1e3;
-    typeof u?.options?.timeout == "number" && c > (u.options.timeout ?? 0) && (u.options.timeout = c), this.idempotencyHeader && n !== "get" && (e.idempotencyKey || (e.idempotencyKey = this.defaultIdempotencyKey()), i[this.idempotencyHeader] = e.idempotencyKey);
-    const h = this.buildHeaders({ options: e, headers: i, contentLength: o });
-    return { req: {
-      method: n,
-      ...s && { body: s },
-      headers: h,
-      ...u && { agent: u },
-      // @ts-ignore node-fetch uses a custom AbortSignal type that is
-      // not compatible with standard web types
-      signal: e.signal ?? null
-    }, url: l, timeout: f };
-  }
-  buildHeaders({ options: e, headers: n, contentLength: a }) {
-    const r = {};
-    a && (r["content-length"] = a);
-    const i = this.defaultHeaders(e);
-    return aP(r, i), aP(r, n), Yj(e.body) && td !== "node" && delete r["content-type"], this.validateHeaders(r, n), r;
-  }
-  /**
-   * Used as a callback for mutating the given `FinalRequestOptions` object.
-   */
-  async prepareOptions(e) {
-  }
-  /**
-   * Used as a callback for mutating the given `RequestInit` object.
-   *
-   * This is useful for cases where you want to add certain headers based off of
-   * the request properties, e.g. `method` or `url`.
-   */
-  async prepareRequest(e, { url: n, options: a }) {
-  }
-  parseHeaders(e) {
-    return e ? Symbol.iterator in e ? Object.fromEntries(Array.from(e).map((n) => [...n])) : { ...e } : {};
-  }
-  makeStatusError(e, n, a, r) {
-    return En.generate(e, n, a, r);
-  }
-  request(e, n = null) {
-    return new fM(this.makeRequest(e, n));
-  }
-  async makeRequest(e, n) {
-    const a = await e;
-    n == null && (n = a.maxRetries ?? this.maxRetries), await this.prepareOptions(a);
-    const { req: r, url: i, timeout: s } = this.buildRequest(a);
-    if (await this.prepareRequest(r, { url: i, options: a }), Zu("request", i, a, r.headers), a.signal?.aborted)
-      throw new bg();
-    const o = new AbortController(), l = await this.fetchWithTimeout(i, r, s, o).catch(yg);
-    if (l instanceof Error) {
-      if (a.signal?.aborted)
-        throw new bg();
-      if (n)
-        return this.retryRequest(a, n);
-      throw l.name === "AbortError" ? new Q$() : new zp({ cause: l });
-    }
-    const f = LU(l.headers);
-    if (!l.ok) {
-      if (n && this.shouldRetry(l)) {
-        const m = `retrying, ${n} attempts remaining`;
-        return Zu(`response (error; ${m})`, l.status, i, f), this.retryRequest(a, n, f);
-      }
-      const u = await l.text().catch((m) => yg(m).message), c = VU(u), h = c ? void 0 : u;
-      throw Zu(`response (error; ${n ? "(error; no more retries left)" : "(error; not retryable)"})`, l.status, i, f, h), this.makeStatusError(l.status, c, h, f);
-    }
-    return { response: l, options: a, controller: o };
-  }
-  requestAPIList(e, n) {
-    const a = this.makeRequest(n, null);
-    return new JU(this, a, e);
-  }
-  buildURL(e, n) {
-    const a = ZU(e) ? new URL(e) : new URL(this.baseURL + (this.baseURL.endsWith("/") && e.startsWith("/") ? e.slice(1) : e)), r = this.defaultQuery();
-    return HU(r) || (n = { ...r, ...n }), typeof n == "object" && n && !Array.isArray(n) && (a.search = this.stringifyQuery(n)), a.toString();
-  }
-  stringifyQuery(e) {
-    return Object.entries(e).filter(([n, a]) => typeof a < "u").map(([n, a]) => {
-      if (typeof a == "string" || typeof a == "number" || typeof a == "boolean")
-        return `${encodeURIComponent(n)}=${encodeURIComponent(a)}`;
-      if (a === null)
-        return `${encodeURIComponent(n)}=`;
-      throw new br(`Cannot stringify type ${typeof a}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`);
-    }).join("&");
-  }
-  async fetchWithTimeout(e, n, a, r) {
-    const { signal: i, ...s } = n || {};
-    i && i.addEventListener("abort", () => r.abort());
-    const o = setTimeout(() => r.abort(), a);
-    return this.getRequestClient().fetch.call(void 0, e, { signal: r.signal, ...s }).finally(() => {
-      clearTimeout(o);
-    });
-  }
-  getRequestClient() {
-    return { fetch: this.fetch };
-  }
-  shouldRetry(e) {
-    const n = e.headers.get("x-should-retry");
-    return n === "true" ? !0 : n === "false" ? !1 : e.status === 408 || e.status === 409 || e.status === 429 || e.status >= 500;
-  }
-  async retryRequest(e, n, a) {
-    let r;
-    const i = a?.["retry-after-ms"];
-    if (i) {
-      const o = parseFloat(i);
-      Number.isNaN(o) || (r = o);
-    }
-    const s = a?.["retry-after"];
-    if (s && !r) {
-      const o = parseFloat(s);
-      Number.isNaN(o) ? r = Date.parse(s) - Date.now() : r = o * 1e3;
-    }
-    if (!(r && 0 <= r && r < 60 * 1e3)) {
-      const o = e.maxRetries ?? this.maxRetries;
-      r = this.calculateDefaultRetryTimeoutMillis(n, o);
-    }
-    return await KU(r), this.makeRequest(e, n - 1);
-  }
-  calculateDefaultRetryTimeoutMillis(e, n) {
-    const i = n - e, s = Math.min(0.5 * Math.pow(2, i), 8), o = 1 - Math.random() * 0.25;
-    return s * o * 1e3;
-  }
-  getUserAgent() {
-    return `${this.constructor.name}/JS ${Au}`;
-  }
-}, JU = class extends fM {
-  constructor(e, n, a) {
-    super(n, async (r) => new a(e, r.response, await dM(r), r.options));
-  }
-  /**
-   * Allow auto-paginating iteration on an unawaited list call, eg:
-   *
-   *    for await (const item of client.items.list()) {
-   *      console.log(item)
-   *    }
-   */
-  async *[Symbol.asyncIterator]() {
-    const e = await this;
-    for await (const n of e)
-      yield n;
-  }
-};
-const LU = (t) => new Proxy(Object.fromEntries(
-  // @ts-ignore
-  t.entries()
-), {
-  get(e, n) {
-    const a = n.toString();
-    return e[a.toLowerCase()] || e[a];
-  }
-}), UU = () => {
-  if (typeof Deno < "u" && Deno.build != null)
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": Au,
-      "X-Stainless-OS": tP(Deno.build.os),
-      "X-Stainless-Arch": eP(Deno.build.arch),
-      "X-Stainless-Runtime": "deno",
-      "X-Stainless-Runtime-Version": typeof Deno.version == "string" ? Deno.version : Deno.version?.deno ?? "unknown"
-    };
-  if (typeof EdgeRuntime < "u")
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": Au,
-      "X-Stainless-OS": "Unknown",
-      "X-Stainless-Arch": `other:${EdgeRuntime}`,
-      "X-Stainless-Runtime": "edge",
-      "X-Stainless-Runtime-Version": ue.version
-    };
-  if (Object.prototype.toString.call(typeof ue < "u" ? ue : 0) === "[object process]")
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": Au,
-      "X-Stainless-OS": tP(ue.platform),
-      "X-Stainless-Arch": eP(ue.arch),
-      "X-Stainless-Runtime": "node",
-      "X-Stainless-Runtime-Version": ue.version
-    };
-  const t = BU();
-  return t ? {
-    "X-Stainless-Lang": "js",
-    "X-Stainless-Package-Version": Au,
-    "X-Stainless-OS": "Unknown",
-    "X-Stainless-Arch": "unknown",
-    "X-Stainless-Runtime": `browser:${t.browser}`,
-    "X-Stainless-Runtime-Version": t.version
-  } : {
-    "X-Stainless-Lang": "js",
-    "X-Stainless-Package-Version": Au,
-    "X-Stainless-OS": "Unknown",
-    "X-Stainless-Arch": "unknown",
-    "X-Stainless-Runtime": "unknown",
-    "X-Stainless-Runtime-Version": "unknown"
-  };
-};
-function BU() {
-  if (typeof navigator > "u" || !navigator)
-    return null;
-  const t = [
-    { key: "edge", pattern: /Edge(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /MSIE(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /Trident(?:.*rv\:(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "chrome", pattern: /Chrome(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "firefox", pattern: /Firefox(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "safari", pattern: /(?:Version\W+(\d+)\.(\d+)(?:\.(\d+))?)?(?:\W+Mobile\S*)?\W+Safari/ }
-  ];
-  for (const { key: e, pattern: n } of t) {
-    const a = n.exec(navigator.userAgent);
-    if (a) {
-      const r = a[1] || 0, i = a[2] || 0, s = a[3] || 0;
-      return { browser: e, version: `${r}.${i}.${s}` };
-    }
-  }
-  return null;
-}
-const eP = (t) => t === "x32" ? "x32" : t === "x86_64" || t === "x64" ? "x64" : t === "arm" ? "arm" : t === "aarch64" || t === "arm64" ? "arm64" : t ? `other:${t}` : "unknown", tP = (t) => (t = t.toLowerCase(), t.includes("ios") ? "iOS" : t === "android" ? "Android" : t === "darwin" ? "MacOS" : t === "win32" ? "Windows" : t === "freebsd" ? "FreeBSD" : t === "openbsd" ? "OpenBSD" : t === "linux" ? "Linux" : t ? `Other:${t}` : "Unknown");
-let nP;
-const xU = () => nP ?? (nP = UU()), VU = (t) => {
-  try {
-    return JSON.parse(t);
-  } catch {
-    return;
-  }
-}, zU = new RegExp("^(?:[a-z]+:)?//", "i"), ZU = (t) => zU.test(t), KU = (t) => new Promise((e) => setTimeout(e, t)), pb = (t, e) => {
-  if (typeof e != "number" || !Number.isInteger(e))
-    throw new br(`${t} must be an integer`);
-  if (e < 0)
-    throw new br(`${t} must be a positive integer`);
-  return e;
-}, yg = (t) => t instanceof Error ? t : new Error(t), rP = (t) => {
-  if (typeof ue < "u")
-    return ue.env?.[t]?.trim() ?? void 0;
-  if (typeof Deno < "u")
-    return Deno.env?.get?.(t)?.trim();
-};
-function HU(t) {
-  if (!t)
-    return !0;
-  for (const e in t)
-    return !1;
-  return !0;
-}
-function GU(t, e) {
-  return Object.prototype.hasOwnProperty.call(t, e);
-}
-function aP(t, e) {
-  for (const n in e) {
-    if (!GU(e, n))
-      continue;
-    const a = n.toLowerCase();
-    if (!a)
-      continue;
-    const r = e[n];
-    r === null ? delete t[a] : r !== void 0 && (t[a] = r);
-  }
-}
-function Zu(t, ...e) {
-  typeof ue < "u" && ue?.env?.DEBUG === "true" && console.log(`Groq:DEBUG:${t}`, ...e);
-}
-const WU = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (t) => {
-  const e = Math.random() * 16 | 0;
-  return (t === "x" ? e : e & 3 | 8).toString(16);
-}), XU = () => (
-  // @ts-ignore
-  typeof window < "u" && // @ts-ignore
-  typeof window.document < "u" && // @ts-ignore
-  typeof navigator < "u"
-);
-let vo = class {
-  constructor(e) {
-    this._client = e;
-  }
-};
-class Wh extends vo {
-  /**
-   * Transcribes audio into the input language.
-   */
-  create(e, n) {
-    return this._client.post("/openai/v1/audio/transcriptions", lM({ body: e, ...n }));
-  }
-}
-Wh || (Wh = {});
-class Xh extends vo {
-  /**
-   * Translates audio into English.
-   */
-  create(e, n) {
-    return this._client.post("/openai/v1/audio/translations", lM({ body: e, ...n }));
-  }
-}
-Xh || (Xh = {});
-class Qh extends vo {
-  constructor() {
-    super(...arguments), this.transcriptions = new Wh(this._client), this.translations = new Xh(this._client);
-  }
-}
-(function(t) {
-  t.Transcriptions = Wh, t.Translations = Xh;
-})(Qh || (Qh = {}));
-let Yh = class extends vo {
-  create(e, n) {
-    return this._client.post("/openai/v1/chat/completions", {
-      body: e,
-      ...n,
-      stream: e.stream ?? !1
-    });
-  }
-};
-Yh || (Yh = {});
-let ep = class extends vo {
-  constructor() {
-    super(...arguments), this.completions = new Yh(this._client);
-  }
-};
-(function(t) {
-  t.Completions = Yh;
-})(ep || (ep = {}));
-let tp = class extends vo {
-};
-tp || (tp = {});
-class np extends vo {
-  /**
-   * Creates an embedding vector representing the input text.
-   */
-  create(e, n) {
-    return this._client.post("/openai/v1/embeddings", { body: e, ...n });
-  }
-}
-np || (np = {});
-let rp = class extends vo {
-  /**
-   * Get a specific model
-   */
-  retrieve(e, n) {
-    return this._client.get(`/openai/v1/models/${e}`, n);
-  }
-  /**
-   * get all available models
-   */
-  list(e) {
-    return this._client.get("/openai/v1/models", e);
-  }
-  /**
-   * Delete a model
-   */
-  delete(e, n) {
-    return this._client.delete(`/openai/v1/models/${e}`, n);
-  }
-};
-rp || (rp = {});
-var pM;
-class ht extends qU {
-  /**
-   * API Client for interfacing with the Groq API.
-   *
-   * @param {string | undefined} [opts.apiKey=process.env['GROQ_API_KEY'] ?? undefined]
-   * @param {string} [opts.baseURL=process.env['GROQ_BASE_URL'] ?? https://api.groq.com] - Override the default base URL for the API.
-   * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
-   * @param {number} [opts.httpAgent] - An HTTP agent used to manage HTTP(s) connections.
-   * @param {Core.Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
-   * @param {number} [opts.maxRetries=2] - The maximum number of times the client will retry a request.
-   * @param {Core.Headers} opts.defaultHeaders - Default headers to include with every request to the API.
-   * @param {Core.DefaultQuery} opts.defaultQuery - Default query parameters to include with every request to the API.
-   * @param {boolean} [opts.dangerouslyAllowBrowser=false] - By default, client-side use of this library is not allowed, as it risks exposing your secret API credentials to attackers.
-   */
-  constructor({ baseURL: e = rP("GROQ_BASE_URL"), apiKey: n = rP("GROQ_API_KEY"), ...a } = {}) {
-    if (n === void 0)
-      throw new br("The GROQ_API_KEY environment variable is missing or empty; either provide it, or instantiate the Groq client with an apiKey option, like new Groq({ apiKey: 'My API Key' }).");
-    const r = {
-      apiKey: n,
-      ...a,
-      baseURL: e || "https://api.groq.com"
-    };
-    if (!r.dangerouslyAllowBrowser && XU())
-      throw new br(`It looks like you're running in a browser-like environment.
-
-This is disabled by default, as it risks exposing your secret API credentials to attackers.
-If you understand the risks and have appropriate mitigations in place,
-you can set the \`dangerouslyAllowBrowser\` option to \`true\`, e.g.,
-
-new Groq({ apiKey, dangerouslyAllowBrowser: true })`);
-    super({
-      baseURL: r.baseURL,
-      timeout: r.timeout ?? 6e4,
-      httpAgent: r.httpAgent,
-      maxRetries: r.maxRetries,
-      fetch: r.fetch
-    }), this.completions = new tp(this), this.chat = new ep(this), this.embeddings = new np(this), this.audio = new Qh(this), this.models = new rp(this), this._options = r, this.apiKey = n;
-  }
-  defaultQuery() {
-    return this._options.defaultQuery;
-  }
-  defaultHeaders(e) {
-    return {
-      ...super.defaultHeaders(e),
-      ...this._options.defaultHeaders
-    };
-  }
-  authHeaders(e) {
-    return { Authorization: `Bearer ${this.apiKey}` };
-  }
-}
-pM = ht;
-ht.Groq = pM;
-ht.GroqError = br;
-ht.APIError = En;
-ht.APIConnectionError = zp;
-ht.APIConnectionTimeoutError = Q$;
-ht.APIUserAbortError = bg;
-ht.NotFoundError = nM;
-ht.ConflictError = rM;
-ht.RateLimitError = iM;
-ht.BadRequestError = Y$;
-ht.AuthenticationError = eM;
-ht.InternalServerError = sM;
-ht.PermissionDeniedError = tM;
-ht.UnprocessableEntityError = aM;
-ht.toFile = cM;
-ht.fileFromPath = W$;
-(function(t) {
-  t.Completions = tp, t.Chat = ep, t.Embeddings = np, t.Audio = Qh, t.Models = rp;
-})(ht || (ht = {}));
-function QU(t) {
-  const e = t._getType();
-  switch (e) {
-    case "system":
-      return "system";
-    case "ai":
-      return "assistant";
-    case "human":
-      return "user";
-    case "function":
-      return "function";
-    case "tool":
-      return "tool";
-    default:
-      throw new Error(`Unknown message type: ${e}`);
-  }
-}
-function iP(t) {
-  return t.map((e) => {
-    if (typeof e.content != "string")
-      throw new Error("Non string message content not supported");
-    const n = {
-      role: QU(e),
-      content: e.content,
-      name: e.name,
-      function_call: e.additional_kwargs.function_call,
-      tool_calls: e.additional_kwargs.tool_calls,
-      tool_call_id: e.tool_call_id
-    };
-    return Vs(e) && e.tool_calls?.length ? n.tool_calls = e.tool_calls.map(__) : (e.additional_kwargs.tool_calls != null && (n.tool_calls = e.additional_kwargs.tool_calls), e.tool_call_id != null && (n.tool_call_id = e.tool_call_id)), n;
-  });
-}
-function YU(t, e) {
-  const n = t.tool_calls;
-  switch (t.role) {
-    case "assistant": {
-      const a = [], r = [];
-      for (const i of n ?? [])
-        try {
-          a.push(Hd(i, { returnId: !0 }));
-        } catch (s) {
-          r.push($p(i, s.message));
-        }
-      return new $t({
-        content: t.content || "",
-        additional_kwargs: { tool_calls: n },
-        tool_calls: a,
-        invalid_tool_calls: r,
-        usage_metadata: e
-      });
-    }
-    default:
-      return new yo(t.content || "", t.role ?? "unknown");
-  }
-}
-function eB(t, e) {
-  if (t?.length)
-    return t.map((n) => ({
-      id: n.id,
-      name: n.function?.name,
-      args: n.function?.arguments,
-      type: "tool_call_chunk",
-      index: e
-    }));
-}
-function tB(t, e, n) {
-  const { role: a } = t, r = t.content ?? "";
-  let i;
-  t.function_call ? i = {
-    function_call: t.function_call
-  } : t.tool_calls ? i = {
-    tool_calls: t.tool_calls
-  } : i = {};
-  let s, o;
-  if (n?.usage && (s = {
-    input_tokens: n.usage.prompt_tokens,
-    output_tokens: n.usage.completion_tokens,
-    total_tokens: n.usage.total_tokens
-  }, o = n.id), a === "user")
-    return {
-      message: new uc({ content: r })
-    };
-  if (a === "assistant") {
-    const l = eB(t.tool_calls, e);
-    return {
-      message: new Ze({
-        content: r,
-        additional_kwargs: i,
-        tool_call_chunks: l ? l.map((f) => ({
-          type: f.type,
-          args: f.args,
-          index: f.index
-        })) : void 0,
-        usage_metadata: s,
-        id: o
-      }),
-      toolCallData: l ? l.map((f) => ({
-        id: f.id ?? "",
-        name: f.name ?? "",
-        index: f.index ?? e,
-        type: "tool_call_chunk"
-      })) : void 0
-    };
-  } else return a === "system" ? {
-    message: new Hu({ content: r })
-  } : {
-    message: new oc({ content: r, role: a })
-  };
-}
-class eK extends Sn {
-  static lc_name() {
-    return "ChatGroq";
-  }
-  _llmType() {
-    return "groq";
-  }
-  get lc_secrets() {
-    return {
-      apiKey: "GROQ_API_KEY"
-    };
-  }
-  constructor(e) {
-    super(e), Object.defineProperty(this, "lc_namespace", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: ["langchain", "chat_models", "groq"]
-    }), Object.defineProperty(this, "client", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "model", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "temperature", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: 0.7
-    }), Object.defineProperty(this, "stop", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "stopSequences", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "maxTokens", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "streaming", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: !1
-    }), Object.defineProperty(this, "apiKey", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "lc_serializable", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: !0
-    });
-    const n = e.apiKey || ft("GROQ_API_KEY");
-    if (!n)
-      throw new Error('Groq API key not found. Please set the GROQ_API_KEY environment variable or provide the key into "apiKey"');
-    const a = {
-      "User-Agent": "langchainjs",
-      ...e.defaultHeaders ?? {}
-    };
-    this.client = new ht({
-      apiKey: n,
-      dangerouslyAllowBrowser: !0,
-      baseURL: e.baseUrl,
-      timeout: e.timeout,
-      httpAgent: e.httpAgent,
-      fetch: e.fetch,
-      maxRetries: 0,
-      defaultHeaders: a,
-      defaultQuery: e.defaultQuery
-    }), this.apiKey = n, this.temperature = e.temperature ?? this.temperature, this.model = e.model, this.streaming = e.streaming ?? this.streaming, this.stop = e.stopSequences ?? (typeof e.stop == "string" ? [e.stop] : e.stop) ?? [], this.stopSequences = this.stop, this.maxTokens = e.maxTokens;
-  }
-  getLsParams(e) {
-    const n = this.invocationParams(e);
-    return {
-      ls_provider: "groq",
-      ls_model_name: this.model,
-      ls_model_type: "chat",
-      ls_temperature: n.temperature ?? this.temperature,
-      ls_max_tokens: n.max_tokens ?? this.maxTokens,
-      ls_stop: e.stop
-    };
-  }
-  async completionWithRetry(e, n) {
-    return this.caller.call(async () => this.client.chat.completions.create(e, n));
-  }
-  invocationParams(e) {
-    const n = super.invocationParams(e);
-    return e.tool_choice !== void 0 && (n.tool_choice = e.tool_choice), e.tools !== void 0 && (n.tools = e.tools), e.response_format !== void 0 && (n.response_format = e.response_format), {
-      ...n,
-      stop: e.stop ?? this.stopSequences,
-      model: this.model,
-      temperature: this.temperature,
-      max_tokens: this.maxTokens
-    };
-  }
-  bindTools(e, n) {
-    return this.bind({
-      tools: e.map((a) => $d(a)),
-      ...n
-    });
-  }
-  async *_streamResponseChunks(e, n, a) {
-    const r = this.invocationParams(n), i = iP(e), s = await this.completionWithRetry({
-      ...r,
-      messages: i,
-      stream: !0
-    }, {
-      signal: n?.signal,
-      headers: n?.headers
-    });
-    let o = "";
-    const l = [];
-    let f;
-    for await (const u of s) {
-      f = u;
-      const c = u?.choices[0];
-      if (!c)
-        continue;
-      c.delta?.role && (o = c.delta.role);
-      const { message: h, toolCallData: p } = tB({
-        ...c.delta,
-        role: o
-      }, c.index, u.x_groq);
-      if (p) {
-        const m = p.filter((b) => l.every((g) => g.id !== b.id));
-        l.push(...m), yield new Bt({
-          message: new Ze({
-            content: "",
-            tool_call_chunks: m
-          }),
-          text: ""
-        });
-      }
-      const d = new Bt({
-        message: h,
-        text: c.delta.content ?? "",
-        generationInfo: {
-          finishReason: c.finish_reason
-        }
-      });
-      yield d, a?.handleLLMNewToken(d.text ?? "");
-    }
-    if (f && ("choices" in f && delete f.choices, yield new Bt({
-      message: new Ze({
-        content: "",
-        response_metadata: f
-      }),
-      text: ""
-    })), n.signal?.aborted)
-      throw new Error("AbortError");
-  }
-  async _generate(e, n, a) {
-    if (this.streaming) {
-      const r = {}, i = this._streamResponseChunks(e, n, a), s = {};
-      for await (const l of i) {
-        const f = l.generationInfo?.completion ?? 0;
-        s[f] === void 0 ? s[f] = l : s[f] = s[f].concat(l);
-      }
-      return { generations: Object.entries(s).sort(([l], [f]) => parseInt(l, 10) - parseInt(f, 10)).map(([l, f]) => f), llmOutput: { estimatedTokenUsage: r } };
-    } else
-      return this._generateNonStreaming(e, n, a);
-  }
-  async _generateNonStreaming(e, n, a) {
-    const r = {}, i = this.invocationParams(n), s = iP(e), o = await this.completionWithRetry({
-      ...i,
-      stream: !1,
-      messages: s
-    }, {
-      signal: n?.signal,
-      headers: n?.headers
-    });
-    if ("usage" in o && o.usage) {
-      const { completion_tokens: f, prompt_tokens: u, total_tokens: c } = o.usage;
-      f && (r.completionTokens = (r.completionTokens ?? 0) + f), u && (r.promptTokens = (r.promptTokens ?? 0) + u), c && (r.totalTokens = (r.totalTokens ?? 0) + c);
-    }
-    const l = [];
-    if ("choices" in o && o.choices)
-      for (const f of o.choices) {
-        const u = f.message?.content ?? "";
-        let c;
-        r.totalTokens !== void 0 && (c = {
-          input_tokens: r.promptTokens ?? 0,
-          output_tokens: r.completionTokens ?? 0,
-          total_tokens: r.totalTokens
-        });
-        const h = {
-          text: u,
-          message: YU(f.message ?? { role: "assistant" }, c)
-        };
-        h.generationInfo = {
-          ...f.finish_reason ? { finish_reason: f.finish_reason } : {},
-          ...f.logprobs ? { logprobs: f.logprobs } : {}
-        }, l.push(h);
-      }
-    return {
-      generations: l,
-      llmOutput: { tokenUsage: r }
-    };
-  }
-  withStructuredOutput(e, n) {
-    const a = e, r = n?.name, i = n?.method, s = n?.includeRaw;
-    let o = r ?? "extract", l, f;
-    if (i === "jsonMode")
-      f = this.bind({
-        response_format: { type: "json_object" }
-      }), eu(a) ? l = Cd.fromZodSchema(a) : l = new Td();
-    else if (eu(a)) {
-      const p = Cn(a);
-      f = this.bind({
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: o,
-              description: p.description,
-              parameters: p
-            }
-          }
-        ],
-        tool_choice: {
-          type: "function",
-          function: {
-            name: o
-          }
-        }
-      }), l = new Yu({
-        returnSingle: !0,
-        keyName: o,
-        zodSchema: a
-      });
-    } else {
-      let p;
-      typeof a.name == "string" && typeof a.parameters == "object" && a.parameters != null ? (p = a, o = a.name) : (o = a.title ?? o, p = {
-        name: o,
-        description: a.description ?? "",
-        parameters: a
-      }), f = this.bind({
-        tools: [
-          {
-            type: "function",
-            function: p
-          }
-        ],
-        tool_choice: {
-          type: "function",
-          function: {
-            name: o
-          }
-        }
-      }), l = new Yu({
-        returnSingle: !0,
-        keyName: o
-      });
-    }
-    if (!s)
-      return f.pipe(l).withConfig({
-        runName: "ChatGroqStructuredOutput"
-      });
-    const u = Mt.assign({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      parsed: (p, d) => l.invoke(p.raw, d)
-    }), c = Mt.assign({
-      parsed: () => null
-    }), h = u.withFallbacks({
-      fallbacks: [c]
-    });
-    return dt.from([
-      {
-        raw: f
-      },
-      h
-    ]).withConfig({
-      runName: "ChatGroqStructuredOutput"
-    });
-  }
-}
-const Eu = "1.26.0";
-let sP = !1, nd, mM, wg, bM, gM, _M;
-function nB(t, e = { auto: !1 }) {
-  if (sP)
-    throw new Error(`you must \`import '@cerebras/cerebras_cloud_sdk/shims/${t.kind}'\` before importing anything else from @cerebras/cerebras_cloud_sdk`);
-  if (nd)
-    throw new Error(`can't \`import '@cerebras/cerebras_cloud_sdk/shims/${t.kind}'\` after \`import '@cerebras/cerebras_cloud_sdk/shims/${nd}'\``);
-  sP = e.auto, nd = t.kind, mM = t.fetch, wg = t.File, bM = t.ReadableStream, gM = t.getDefaultAgent, _M = t.fileFromPath;
-}
-class rB {
-  constructor(e) {
-    this.body = e;
-  }
-  get [Symbol.toStringTag]() {
-    return "MultipartBody";
-  }
-}
-function aB({ manuallyImported: t } = {}) {
-  const e = t ? "You may need to use polyfills" : "Add one of these imports before your first `import … from '@cerebras/cerebras_cloud_sdk'`:\n- `import '@cerebras/cerebras_cloud_sdk/shims/node'` (if you're running on Node)\n- `import '@cerebras/cerebras_cloud_sdk/shims/web'` (otherwise)\n";
-  let n, a, r, i;
-  try {
-    n = fetch, a = Request, r = Response, i = Headers;
-  } catch (s) {
-    throw new Error(`this environment is missing the following Web Fetch API type: ${s.message}. ${e}`);
-  }
-  return {
-    kind: "web",
-    fetch: n,
-    Request: a,
-    Response: r,
-    Headers: i,
-    FormData: (
-      // @ts-ignore
-      typeof FormData < "u" ? FormData : class {
-        // @ts-ignore
-        constructor() {
-          throw new Error(`file uploads aren't supported in this environment yet as 'FormData' is undefined. ${e}`);
-        }
-      }
-    ),
-    Blob: typeof Blob < "u" ? Blob : class {
-      constructor() {
-        throw new Error(`file uploads aren't supported in this environment yet as 'Blob' is undefined. ${e}`);
-      }
-    },
-    File: (
-      // @ts-ignore
-      typeof File < "u" ? File : class {
-        // @ts-ignore
-        constructor() {
-          throw new Error(`file uploads aren't supported in this environment yet as 'File' is undefined. ${e}`);
-        }
-      }
-    ),
-    ReadableStream: (
-      // @ts-ignore
-      typeof ReadableStream < "u" ? ReadableStream : class {
-        // @ts-ignore
-        constructor() {
-          throw new Error(`streaming isn't supported in this environment yet as 'ReadableStream' is undefined. ${e}`);
-        }
-      }
-    ),
-    getMultipartRequestOptions: async (s, o) => ({
-      ...o,
-      body: new rB(s)
-    }),
-    getDefaultAgent: (s) => {
-    },
-    fileFromPath: () => {
-      throw new Error("The `fileFromPath` function is only supported in Node. See the README for more details: https://www.github.com/Cerebras/cerebras-cloud-sdk-node#file-uploads");
-    },
-    isFsReadStream: (s) => !1
-  };
-}
-nd || nB(aB(), { auto: !0 });
-class la extends Error {
-}
-class Nt extends la {
-  constructor(e, n, a, r) {
-    super(`${Nt.makeMessage(e, n, a)}`), this.status = e, this.headers = r, this.error = n;
-  }
-  static makeMessage(e, n, a) {
-    const r = n?.message ? typeof n.message == "string" ? n.message : JSON.stringify(n.message) : n ? JSON.stringify(n) : a;
-    return e && r ? `${e} ${r}` : e ? `${e} status code (no body)` : r || "(no status code or body)";
-  }
-  static generate(e, n, a, r) {
-    if (e === void 0 || r === void 0)
-      return new Zp({ message: a, cause: Sg(n) });
-    const i = n;
-    return e === 400 ? new wM(e, i, a, r) : e === 401 ? new vM(e, i, a, r) : e === 403 ? new SM(e, i, a, r) : e === 404 ? new OM(e, i, a, r) : e === 409 ? new jM(e, i, a, r) : e === 422 ? new PM(e, i, a, r) : e === 429 ? new RM(e, i, a, r) : e >= 500 ? new CM(e, i, a, r) : new Nt(e, i, a, r);
-  }
-}
-class vg extends Nt {
-  constructor({ message: e } = {}) {
-    super(void 0, void 0, e || "Request was aborted.", void 0);
-  }
-}
-class Zp extends Nt {
-  constructor({ message: e, cause: n }) {
-    super(void 0, void 0, e || "Connection error.", void 0), n && (this.cause = n);
-  }
-}
-class yM extends Zp {
-  constructor({ message: e } = {}) {
-    super({ message: e ?? "Request timed out." });
-  }
-}
-class wM extends Nt {
-}
-class vM extends Nt {
-}
-class SM extends Nt {
-}
-class OM extends Nt {
-}
-class jM extends Nt {
-}
-class PM extends Nt {
-}
-class RM extends Nt {
-}
-class CM extends Nt {
-}
-class qu {
-  constructor(e, n) {
-    this.iterator = e, this.controller = n;
-  }
-  static fromSSEResponse(e, n) {
-    let a = !1;
-    async function* r() {
-      if (a)
-        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      a = !0;
-      let i = !1;
-      try {
-        for await (const s of iB(e, n))
-          if (!i) {
-            if (s.data.startsWith("[DONE]")) {
-              i = !0;
-              continue;
-            }
-            if (s.event === null) {
-              let o;
-              try {
-                o = JSON.parse(s.data);
-              } catch (l) {
-                throw console.error("Could not parse message into JSON:", s.data), console.error("From chunk:", s.raw), l;
-              }
-              if (o && o.error) {
-                const l = o.status_code || 0;
-                throw Nt.generate(l, o.error, void 0, void 0);
-              }
-              yield o;
-            } else {
-              let o;
-              try {
-                o = JSON.parse(s.data);
-              } catch (l) {
-                throw console.error("Could not parse message into JSON:", s.data), console.error("From chunk:", s.raw), l;
-              }
-              if (s.event == "error") {
-                const l = o.status_code || 0;
-                throw Nt.generate(l, o.error, void 0, void 0);
-              }
-              yield { event: s.event, data: o };
-            }
-          }
-        i = !0;
-      } catch (s) {
-        if (s instanceof Error && s.name === "AbortError")
-          return;
-        throw s;
-      } finally {
-        i || n.abort();
-      }
-    }
-    return new qu(r, n);
-  }
-  /**
-   * Generates a Stream from a newline-separated ReadableStream
-   * where each item is a JSON value.
-   */
-  static fromReadableStream(e, n) {
-    let a = !1;
-    async function* r() {
-      const s = new tu(), o = TM(e);
-      for await (const l of o)
-        for (const f of s.decode(l))
-          yield f;
-      for (const l of s.flush())
-        yield l;
-    }
-    async function* i() {
-      if (a)
-        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      a = !0;
-      let s = !1;
-      try {
-        for await (const o of r())
-          s || o && (yield JSON.parse(o));
-        s = !0;
-      } catch (o) {
-        if (o instanceof Error && o.name === "AbortError")
-          return;
-        throw o;
-      } finally {
-        s || n.abort();
-      }
-    }
-    return new qu(i, n);
-  }
-  [Symbol.asyncIterator]() {
-    return this.iterator();
-  }
-  /**
-   * Splits the stream into two streams which can be
-   * independently read from at different speeds.
-   */
-  tee() {
-    const e = [], n = [], a = this.iterator(), r = (i) => ({
-      next: () => {
-        if (i.length === 0) {
-          const s = a.next();
-          e.push(s), n.push(s);
-        }
-        return i.shift();
-      }
-    });
-    return [
-      new qu(() => r(e), this.controller),
-      new qu(() => r(n), this.controller)
-    ];
-  }
-  /**
-   * Converts this stream to a newline-separated ReadableStream of
-   * JSON stringified values in the stream
-   * which can be turned back into a Stream with `Stream.fromReadableStream()`.
-   */
-  toReadableStream() {
-    const e = this;
-    let n;
-    const a = new TextEncoder();
-    return new bM({
-      async start() {
-        n = e[Symbol.asyncIterator]();
-      },
-      async pull(r) {
-        try {
-          const { value: i, done: s } = await n.next();
-          if (s)
-            return r.close();
-          const o = a.encode(JSON.stringify(i) + `
-`);
-          r.enqueue(o);
-        } catch (i) {
-          r.error(i);
-        }
-      },
-      async cancel() {
-        await n.return?.();
-      }
-    });
-  }
-}
-async function* iB(t, e) {
-  if (!t.body)
-    throw e.abort(), new la("Attempted to iterate over a response with no body");
-  const n = new uB(), a = new tu(), r = TM(t.body);
-  for await (const i of sB(r))
-    for (const s of a.decode(i)) {
-      const o = n.decode(s);
-      o && (yield o);
-    }
-  for (const i of a.flush()) {
-    const s = n.decode(i);
-    s && (yield s);
-  }
-}
-async function* sB(t) {
-  let e = new Uint8Array();
-  for await (const n of t) {
-    if (n == null)
-      continue;
-    const a = n instanceof ArrayBuffer ? new Uint8Array(n) : typeof n == "string" ? new TextEncoder().encode(n) : n;
-    let r = new Uint8Array(e.length + a.length);
-    r.set(e), r.set(a, e.length), e = r;
-    let i;
-    for (; (i = oB(e)) !== -1; )
-      yield e.slice(0, i), e = e.slice(i);
-  }
-  e.length > 0 && (yield e);
-}
-function oB(t) {
-  for (let a = 0; a < t.length - 2; a++) {
-    if (t[a] === 10 && t[a + 1] === 10 || t[a] === 13 && t[a + 1] === 13)
-      return a + 2;
-    if (t[a] === 13 && t[a + 1] === 10 && a + 3 < t.length && t[a + 2] === 13 && t[a + 3] === 10)
-      return a + 4;
-  }
-  return -1;
-}
-class uB {
-  constructor() {
-    this.event = null, this.data = [], this.chunks = [];
-  }
-  decode(e) {
-    if (e.endsWith("\r") && (e = e.substring(0, e.length - 1)), !e) {
-      if (!this.event && !this.data.length)
-        return null;
-      const i = {
-        event: this.event,
-        data: this.data.join(`
-`),
-        raw: this.chunks
-      };
-      return this.event = null, this.data = [], this.chunks = [], i;
-    }
-    if (this.chunks.push(e), e.startsWith(":"))
-      return null;
-    let [n, a, r] = cB(e, ":");
-    return r.startsWith(" ") && (r = r.substring(1)), n === "event" ? this.event = r : n === "data" && this.data.push(r), null;
-  }
-}
-class tu {
-  constructor() {
-    this.buffer = [], this.trailingCR = !1;
-  }
-  decode(e) {
-    let n = this.decodeText(e);
-    if (this.trailingCR && (n = "\r" + n, this.trailingCR = !1), n.endsWith("\r") && (this.trailingCR = !0, n = n.slice(0, -1)), !n)
-      return [];
-    const a = tu.NEWLINE_CHARS.has(n[n.length - 1] || "");
-    let r = n.split(tu.NEWLINE_REGEXP);
-    return a && r.pop(), r.length === 1 && !a ? (this.buffer.push(r[0]), []) : (this.buffer.length > 0 && (r = [this.buffer.join("") + r[0], ...r.slice(1)], this.buffer = []), a || (this.buffer = [r.pop() || ""]), r);
-  }
-  decodeText(e) {
-    if (e == null)
-      return "";
-    if (typeof e == "string")
-      return e;
-    if (typeof Ke < "u") {
-      if (e instanceof Ke)
-        return e.toString();
-      if (e instanceof Uint8Array)
-        return Ke.from(e).toString();
-      throw new la(`Unexpected: received non-Uint8Array (${e.constructor.name}) stream chunk in an environment with a global "Buffer" defined, which this library assumes to be Node. Please report this error.`);
-    }
-    if (typeof TextDecoder < "u") {
-      if (e instanceof Uint8Array || e instanceof ArrayBuffer)
-        return this.textDecoder ?? (this.textDecoder = new TextDecoder("utf8")), this.textDecoder.decode(e);
-      throw new la(`Unexpected: received non-Uint8Array/ArrayBuffer (${e.constructor.name}) in a web platform. Please report this error.`);
-    }
-    throw new la("Unexpected: neither Buffer nor TextDecoder are available as globals. Please report this error.");
-  }
-  flush() {
-    if (!this.buffer.length && !this.trailingCR)
-      return [];
-    const e = [this.buffer.join("")];
-    return this.buffer = [], this.trailingCR = !1, e;
-  }
-}
-tu.NEWLINE_CHARS = /* @__PURE__ */ new Set([`
-`, "\r"]);
-tu.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
-function cB(t, e) {
-  const n = t.indexOf(e);
-  return n !== -1 ? [t.substring(0, n), e, t.substring(n + e.length)] : [t, "", ""];
-}
-function TM(t) {
-  if (t[Symbol.asyncIterator])
-    return t;
-  const e = t.getReader();
-  return {
-    async next() {
-      try {
-        const n = await e.read();
-        return n?.done && e.releaseLock(), n;
-      } catch (n) {
-        throw e.releaseLock(), n;
-      }
-    },
-    async return() {
-      const n = e.cancel();
-      return e.releaseLock(), await n, { done: !0, value: void 0 };
-    },
-    [Symbol.asyncIterator]() {
-      return this;
-    }
-  };
-}
-const lB = (t) => t != null && typeof t == "object" && typeof t.url == "string" && typeof t.blob == "function", dB = (t) => t != null && typeof t == "object" && typeof t.name == "string" && typeof t.lastModified == "number" && Kp(t), Kp = (t) => t != null && typeof t == "object" && typeof t.size == "number" && typeof t.type == "string" && typeof t.text == "function" && typeof t.slice == "function" && typeof t.arrayBuffer == "function";
-async function fB(t, e, n) {
-  if (t = await t, dB(t))
-    return t;
-  if (lB(t)) {
-    const r = await t.blob();
-    e || (e = new URL(t.url).pathname.split(/[\\/]/).pop() ?? "unknown_file");
-    const i = Kp(r) ? [await r.arrayBuffer()] : [r];
-    return new wg(i, e, n);
-  }
-  const a = await hB(t);
-  if (e || (e = mB(t) ?? "unknown_file"), !n?.type) {
-    const r = a[0]?.type;
-    typeof r == "string" && (n = { ...n, type: r });
-  }
-  return new wg(a, e, n);
-}
-async function hB(t) {
-  let e = [];
-  if (typeof t == "string" || ArrayBuffer.isView(t) || // includes Uint8Array, Buffer, etc.
-  t instanceof ArrayBuffer)
-    e.push(t);
-  else if (Kp(t))
-    e.push(await t.arrayBuffer());
-  else if (bB(t))
-    for await (const n of t)
-      e.push(n);
-  else
-    throw new Error(`Unexpected data type: ${typeof t}; constructor: ${t?.constructor?.name}; props: ${pB(t)}`);
-  return e;
-}
-function pB(t) {
-  return `[${Object.getOwnPropertyNames(t).map((n) => `"${n}"`).join(", ")}]`;
-}
-function mB(t) {
-  return mb(t.name) || mb(t.filename) || // For fs.ReadStream
-  mb(t.path)?.split(/[\\/]/).pop();
-}
-const mb = (t) => {
-  if (typeof t == "string")
-    return t;
-  if (typeof Ke < "u" && t instanceof Ke)
-    return String(t);
-}, bB = (t) => t != null && typeof t == "object" && typeof t[Symbol.asyncIterator] == "function", oP = (t) => t && typeof t == "object" && t.body && t[Symbol.toStringTag] === "MultipartBody";
-async function $M(t) {
-  const { response: e } = t;
-  if (t.options.stream)
-    return Vo("response", e.status, e.url, e.headers, e.body), t.options.__streamClass ? t.options.__streamClass.fromSSEResponse(e, t.controller) : qu.fromSSEResponse(e, t.controller);
-  if (e.status === 204)
-    return null;
-  if (t.options.__binaryResponse)
-    return e;
-  const a = e.headers.get("content-type")?.split(";")[0]?.trim();
-  if (a?.includes("application/json") || a?.endsWith("+json")) {
-    const s = await e.json();
-    return Vo("response", e.status, e.url, e.headers, s), s;
-  }
-  const i = await e.text();
-  return Vo("response", e.status, e.url, e.headers, i), i;
-}
-class Hp extends Promise {
-  constructor(e, n = $M) {
-    super((a) => {
-      a(null);
-    }), this.responsePromise = e, this.parseResponse = n;
-  }
-  _thenUnwrap(e) {
-    return new Hp(this.responsePromise, async (n) => e(await this.parseResponse(n), n));
-  }
-  /**
-   * Gets the raw `Response` instance instead of parsing the response
-   * data.
-   *
-   * If you want to parse the response body but still get the `Response`
-   * instance, you can use {@link withResponse()}.
-   *
-   * 👋 Getting the wrong TypeScript type for `Response`?
-   * Try setting `"moduleResolution": "NodeNext"` if you can,
-   * or add one of these imports before your first `import … from '@cerebras/cerebras_cloud_sdk'`:
-   * - `import '@cerebras/cerebras_cloud_sdk/shims/node'` (if you're running on Node)
-   * - `import '@cerebras/cerebras_cloud_sdk/shims/web'` (otherwise)
-   */
-  asResponse() {
-    return this.responsePromise.then((e) => e.response);
-  }
-  /**
-   * Gets the parsed response data and the raw `Response` instance.
-   *
-   * If you just want to get the raw `Response` instance without parsing it,
-   * you can use {@link asResponse()}.
-   *
-   *
-   * 👋 Getting the wrong TypeScript type for `Response`?
-   * Try setting `"moduleResolution": "NodeNext"` if you can,
-   * or add one of these imports before your first `import … from '@cerebras/cerebras_cloud_sdk'`:
-   * - `import '@cerebras/cerebras_cloud_sdk/shims/node'` (if you're running on Node)
-   * - `import '@cerebras/cerebras_cloud_sdk/shims/web'` (otherwise)
-   */
-  async withResponse() {
-    const [e, n] = await Promise.all([this.parse(), this.asResponse()]);
-    return { data: e, response: n };
-  }
-  parse() {
-    return this.parsedPromise || (this.parsedPromise = this.responsePromise.then(this.parseResponse)), this.parsedPromise;
-  }
-  then(e, n) {
-    return this.parse().then(e, n);
-  }
-  catch(e) {
-    return this.parse().catch(e);
-  }
-  finally(e) {
-    return this.parse().finally(e);
-  }
-}
-class gB {
-  constructor({
-    baseURL: e,
-    maxRetries: n = 2,
-    timeout: a = 6e4,
-    // 1 minute
-    httpAgent: r,
-    fetch: i
-  }) {
-    this.baseURL = e, this.maxRetries = bb("maxRetries", n), this.timeout = bb("timeout", a), this.httpAgent = r, this.fetch = i ?? mM;
-  }
-  authHeaders(e) {
-    return {};
-  }
-  /**
-   * Override this to add your own default headers, for example:
-   *
-   *  {
-   *    ...super.defaultHeaders(),
-   *    Authorization: 'Bearer 123',
-   *  }
-   */
-  defaultHeaders(e) {
-    return {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "User-Agent": this.getUserAgent(),
-      ...OB(),
-      ...this.authHeaders(e)
-    };
-  }
-  /**
-   * Override this to add your own headers validation:
-   */
-  validateHeaders(e, n) {
-  }
-  defaultIdempotencyKey() {
-    return `stainless-node-retry-${TB()}`;
-  }
-  get(e, n) {
-    return this.methodRequest("get", e, n);
-  }
-  post(e, n) {
-    return this.methodRequest("post", e, n);
-  }
-  patch(e, n) {
-    return this.methodRequest("patch", e, n);
-  }
-  put(e, n) {
-    return this.methodRequest("put", e, n);
-  }
-  delete(e, n) {
-    return this.methodRequest("delete", e, n);
-  }
-  methodRequest(e, n, a) {
-    return this.request(Promise.resolve(a).then(async (r) => {
-      const i = r && Kp(r?.body) ? new DataView(await r.body.arrayBuffer()) : r?.body instanceof DataView ? r.body : r?.body instanceof ArrayBuffer ? new DataView(r.body) : r && ArrayBuffer.isView(r?.body) ? new DataView(r.body.buffer) : r?.body;
-      return { method: e, path: n, ...r, body: i };
-    }));
-  }
-  getAPIList(e, n, a) {
-    return this.requestAPIList(n, { method: "get", path: e, ...a });
-  }
-  calculateContentLength(e) {
-    if (typeof e == "string") {
-      if (typeof Ke < "u")
-        return Ke.byteLength(e, "utf8").toString();
-      if (typeof TextEncoder < "u")
-        return new TextEncoder().encode(e).length.toString();
-    } else if (ArrayBuffer.isView(e))
-      return e.byteLength.toString();
-    return null;
-  }
-  buildRequest(e, { retryCount: n = 0 } = {}) {
-    e = { ...e };
-    const { method: a, path: r, query: i, headers: s = {} } = e, o = ArrayBuffer.isView(e.body) || e.__binaryRequest && typeof e.body == "string" ? e.body : oP(e.body) ? e.body.body : e.body ? JSON.stringify(e.body, null, 2) : null, l = this.calculateContentLength(o), f = this.buildURL(r, i);
-    "timeout" in e && bb("timeout", e.timeout), e.timeout = e.timeout ?? this.timeout;
-    const u = e.httpAgent ?? this.httpAgent ?? gM(f), c = e.timeout + 1e3;
-    typeof u?.options?.timeout == "number" && c > (u.options.timeout ?? 0) && (u.options.timeout = c), this.idempotencyHeader && a !== "get" && (e.idempotencyKey || (e.idempotencyKey = this.defaultIdempotencyKey()), s[this.idempotencyHeader] = e.idempotencyKey);
-    const h = this.buildHeaders({ options: e, headers: s, contentLength: l, retryCount: n });
-    return { req: {
-      method: a,
-      ...o && { body: o },
-      headers: h,
-      ...u && { agent: u },
-      // @ts-ignore node-fetch uses a custom AbortSignal type that is
-      // not compatible with standard web types
-      signal: e.signal ?? null
-    }, url: f, timeout: e.timeout };
-  }
-  buildHeaders({ options: e, headers: n, contentLength: a, retryCount: r }) {
-    const i = {};
-    a && (i["content-length"] = a);
-    const s = this.defaultHeaders(e);
-    return hP(i, s), hP(i, n), oP(e.body) && nd !== "node" && delete i["content-type"], Yf(s, "x-stainless-retry-count") === void 0 && Yf(n, "x-stainless-retry-count") === void 0 && (i["x-stainless-retry-count"] = String(r)), Yf(s, "x-stainless-timeout") === void 0 && Yf(n, "x-stainless-timeout") === void 0 && e.timeout && (i["x-stainless-timeout"] = String(e.timeout)), this.validateHeaders(i, n), i;
-  }
-  /**
-   * Used as a callback for mutating the given `FinalRequestOptions` object.
-   */
-  async prepareOptions(e) {
-  }
-  /**
-   * Used as a callback for mutating the given `RequestInit` object.
-   *
-   * This is useful for cases where you want to add certain headers based off of
-   * the request properties, e.g. `method` or `url`.
-   */
-  async prepareRequest(e, { url: n, options: a }) {
-  }
-  parseHeaders(e) {
-    return e ? Symbol.iterator in e ? Object.fromEntries(Array.from(e).map((n) => [...n])) : { ...e } : {};
-  }
-  makeStatusError(e, n, a, r) {
-    return Nt.generate(e, n, a, r);
-  }
-  request(e, n = null) {
-    return new Hp(this.makeRequest(e, n));
-  }
-  async makeRequest(e, n) {
-    const a = await e, r = a.maxRetries ?? this.maxRetries;
-    n == null && (n = r), await this.prepareOptions(a);
-    const { req: i, url: s, timeout: o } = this.buildRequest(a, { retryCount: r - n });
-    if (await this.prepareRequest(i, { url: s, options: a }), Vo("request", s, a, i.headers), a.signal?.aborted)
-      throw new vg();
-    const l = new AbortController(), f = await this.fetchWithTimeout(s, i, o, l).catch(Sg);
-    if (f instanceof Error) {
-      if (a.signal?.aborted)
-        throw new vg();
-      if (n)
-        return this.retryRequest(a, n);
-      throw f.name === "AbortError" ? new yM() : new Zp({ cause: f });
-    }
-    const u = yB(f.headers);
-    if (!f.ok) {
-      if (n && this.shouldRetry(f)) {
-        const b = `retrying, ${n} attempts remaining`;
-        return Vo(`response (error; ${b})`, f.status, s, u), this.retryRequest(a, n, u);
-      }
-      const c = await f.text().catch((b) => Sg(b).message), h = jB(c), p = h ? void 0 : c;
-      throw Vo(`response (error; ${n ? "(error; no more retries left)" : "(error; not retryable)"})`, f.status, s, u, p), this.makeStatusError(f.status, h, p, u);
-    }
-    return { response: f, options: a, controller: l };
-  }
-  requestAPIList(e, n) {
-    const a = this.makeRequest(n, null);
-    return new _B(this, a, e);
-  }
-  buildURL(e, n) {
-    const a = RB(e) ? new URL(e) : new URL(this.baseURL + (this.baseURL.endsWith("/") && e.startsWith("/") ? e.slice(1) : e)), r = this.defaultQuery();
-    return MM(r) || (n = { ...r, ...n }), typeof n == "object" && n && !Array.isArray(n) && (a.search = this.stringifyQuery(n)), a.toString();
-  }
-  stringifyQuery(e) {
-    return Object.entries(e).filter(([n, a]) => typeof a < "u").map(([n, a]) => {
-      if (typeof a == "string" || typeof a == "number" || typeof a == "boolean")
-        return `${encodeURIComponent(n)}=${encodeURIComponent(a)}`;
-      if (a === null)
-        return `${encodeURIComponent(n)}=`;
-      throw new la(`Cannot stringify type ${typeof a}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`);
-    }).join("&");
-  }
-  async fetchWithTimeout(e, n, a, r) {
-    const { signal: i, ...s } = n || {};
-    i && i.addEventListener("abort", () => r.abort());
-    const o = setTimeout(() => r.abort(), a), l = {
-      signal: r.signal,
-      ...s
-    };
-    return l.method && (l.method = l.method.toUpperCase()), // use undefined this binding; fetch errors if bound to something else in browser/cloudflare
-    this.fetch.call(void 0, e, l).finally(() => {
-      clearTimeout(o);
-    });
-  }
-  shouldRetry(e) {
-    const n = e.headers.get("x-should-retry");
-    return n === "true" ? !0 : n === "false" ? !1 : e.status === 408 || e.status === 409 || e.status === 429 || e.status >= 500;
-  }
-  async retryRequest(e, n, a) {
-    let r;
-    const i = a?.["retry-after-ms"];
-    if (i) {
-      const o = parseFloat(i);
-      Number.isNaN(o) || (r = o);
-    }
-    const s = a?.["retry-after"];
-    if (s && !r) {
-      const o = parseFloat(s);
-      Number.isNaN(o) ? r = Date.parse(s) - Date.now() : r = o * 1e3;
-    }
-    if (!(r && 0 <= r && r < 60 * 1e3)) {
-      const o = e.maxRetries ?? this.maxRetries;
-      r = this.calculateDefaultRetryTimeoutMillis(n, o);
-    }
-    return await CB(r), this.makeRequest(e, n - 1);
-  }
-  calculateDefaultRetryTimeoutMillis(e, n) {
-    const i = n - e, s = Math.min(0.5 * Math.pow(2, i), 8), o = 1 - Math.random() * 0.25;
-    return s * o * 1e3;
-  }
-  getUserAgent() {
-    return `${this.constructor.name}/JS ${Eu}`;
-  }
-}
-class _B extends Hp {
-  constructor(e, n, a) {
-    super(n, async (r) => new a(e, r.response, await $M(r), r.options));
-  }
-  /**
-   * Allow auto-paginating iteration on an unawaited list call, eg:
-   *
-   *    for await (const item of client.items.list()) {
-   *      console.log(item)
-   *    }
-   */
-  async *[Symbol.asyncIterator]() {
-    const e = await this;
-    for await (const n of e)
-      yield n;
-  }
-}
-const yB = (t) => new Proxy(Object.fromEntries(
-  // @ts-ignore
-  t.entries()
-), {
-  get(e, n) {
-    const a = n.toString();
-    return e[a.toLowerCase()] || e[a];
-  }
-}), wB = {
-  method: !0,
-  path: !0,
-  query: !0,
-  body: !0,
-  headers: !0,
-  maxRetries: !0,
-  stream: !0,
-  timeout: !0,
-  httpAgent: !0,
-  signal: !0,
-  idempotencyKey: !0,
-  __binaryRequest: !0,
-  __binaryResponse: !0,
-  __streamClass: !0
-}, uP = (t) => typeof t == "object" && t !== null && !MM(t) && Object.keys(t).every((e) => AM(wB, e)), vB = () => {
-  if (typeof Deno < "u" && Deno.build != null)
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": Eu,
-      "X-Stainless-OS": lP(Deno.build.os),
-      "X-Stainless-Arch": cP(Deno.build.arch),
-      "X-Stainless-Runtime": "deno",
-      "X-Stainless-Runtime-Version": typeof Deno.version == "string" ? Deno.version : Deno.version?.deno ?? "unknown"
-    };
-  if (typeof EdgeRuntime < "u")
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": Eu,
-      "X-Stainless-OS": "Unknown",
-      "X-Stainless-Arch": `other:${EdgeRuntime}`,
-      "X-Stainless-Runtime": "edge",
-      "X-Stainless-Runtime-Version": ue.version
-    };
-  if (Object.prototype.toString.call(typeof ue < "u" ? ue : 0) === "[object process]")
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": Eu,
-      "X-Stainless-OS": lP(ue.platform),
-      "X-Stainless-Arch": cP(ue.arch),
-      "X-Stainless-Runtime": "node",
-      "X-Stainless-Runtime-Version": ue.version
-    };
-  const t = SB();
-  return t ? {
-    "X-Stainless-Lang": "js",
-    "X-Stainless-Package-Version": Eu,
-    "X-Stainless-OS": "Unknown",
-    "X-Stainless-Arch": "unknown",
-    "X-Stainless-Runtime": `browser:${t.browser}`,
-    "X-Stainless-Runtime-Version": t.version
-  } : {
-    "X-Stainless-Lang": "js",
-    "X-Stainless-Package-Version": Eu,
-    "X-Stainless-OS": "Unknown",
-    "X-Stainless-Arch": "unknown",
-    "X-Stainless-Runtime": "unknown",
-    "X-Stainless-Runtime-Version": "unknown"
-  };
-};
-function SB() {
-  if (typeof navigator > "u" || !navigator)
-    return null;
-  const t = [
-    { key: "edge", pattern: /Edge(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /MSIE(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /Trident(?:.*rv\:(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "chrome", pattern: /Chrome(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "firefox", pattern: /Firefox(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "safari", pattern: /(?:Version\W+(\d+)\.(\d+)(?:\.(\d+))?)?(?:\W+Mobile\S*)?\W+Safari/ }
-  ];
-  for (const { key: e, pattern: n } of t) {
-    const a = n.exec(navigator.userAgent);
-    if (a) {
-      const r = a[1] || 0, i = a[2] || 0, s = a[3] || 0;
-      return { browser: e, version: `${r}.${i}.${s}` };
-    }
-  }
-  return null;
-}
-const cP = (t) => t === "x32" ? "x32" : t === "x86_64" || t === "x64" ? "x64" : t === "arm" ? "arm" : t === "aarch64" || t === "arm64" ? "arm64" : t ? `other:${t}` : "unknown", lP = (t) => (t = t.toLowerCase(), t.includes("ios") ? "iOS" : t === "android" ? "Android" : t === "darwin" ? "MacOS" : t === "win32" ? "Windows" : t === "freebsd" ? "FreeBSD" : t === "openbsd" ? "OpenBSD" : t === "linux" ? "Linux" : t ? `Other:${t}` : "Unknown");
-let dP;
-const OB = () => dP ?? (dP = vB()), jB = (t) => {
-  try {
-    return JSON.parse(t);
-  } catch {
-    return;
-  }
-}, PB = /^[a-z][a-z0-9+.-]*:/i, RB = (t) => PB.test(t), CB = (t) => new Promise((e) => setTimeout(e, t)), bb = (t, e) => {
-  if (typeof e != "number" || !Number.isInteger(e))
-    throw new la(`${t} must be an integer`);
-  if (e < 0)
-    throw new la(`${t} must be a positive integer`);
-  return e;
-}, Sg = (t) => {
-  if (t instanceof Error)
-    return t;
-  if (typeof t == "object" && t !== null)
-    try {
-      return new Error(JSON.stringify(t));
-    } catch {
-    }
-  return new Error(t);
-}, fP = (t) => {
-  if (typeof ue < "u")
-    return ue.env?.[t]?.trim() ?? void 0;
-  if (typeof Deno < "u")
-    return Deno.env?.get?.(t)?.trim();
-};
-function MM(t) {
-  if (!t)
-    return !0;
-  for (const e in t)
-    return !1;
-  return !0;
-}
-function AM(t, e) {
-  return Object.prototype.hasOwnProperty.call(t, e);
-}
-function hP(t, e) {
-  for (const n in e) {
-    if (!AM(e, n))
-      continue;
-    const a = n.toLowerCase();
-    if (!a)
-      continue;
-    const r = e[n];
-    r === null ? delete t[a] : r !== void 0 && (t[a] = r);
-  }
-}
-function Vo(t, ...e) {
-  typeof ue < "u" && ue?.env?.DEBUG === "true" && console.log(`Cerebras:DEBUG:${t}`, ...e);
-}
-const TB = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (t) => {
-  const e = Math.random() * 16 | 0;
-  return (t === "x" ? e : e & 3 | 8).toString(16);
-}), $B = (t) => typeof t?.get == "function", Yf = (t, e) => {
-  const n = e.toLowerCase();
-  if ($B(t)) {
-    const a = e[0]?.toUpperCase() + e.substring(1).replace(/([^\w])(\w)/g, (r, i, s) => i + s.toUpperCase());
-    for (const r of [e, n, e.toUpperCase(), a]) {
-      const i = t.get(r);
-      if (i)
-        return i;
-    }
-  }
-  for (const [a, r] of Object.entries(t))
-    if (a.toLowerCase() === n)
-      return Array.isArray(r) ? (r.length <= 1 || console.warn(`Received ${r.length} entries for the ${e} header, using the first entry.`), r[0]) : r;
-};
-class Gp {
-  constructor(e) {
-    this._client = e;
-  }
-}
-let EM = class extends Gp {
-  create(e, n) {
-    const { "CF-RAY": a, "X-Amz-Cf-Id": r, "X-delay-time": i, ...s } = e;
-    return this._client.post("/v1/chat/completions", {
-      body: s,
-      ...n,
-      stream: s.stream ?? !1,
-      headers: {
-        ...a != null ? { "CF-RAY": a } : void 0,
-        ...r != null ? { "X-Amz-Cf-Id": r } : void 0,
-        ...i?.toString() != null ? { "X-delay-time": i?.toString() } : void 0,
-        ...n?.headers
-      }
-    });
-  }
-};
-class ny extends Gp {
-  constructor() {
-    super(...arguments), this.completions = new EM(this._client);
-  }
-}
-ny.Completions = EM;
-class IM extends Gp {
-  create(e, n) {
-    const { "CF-RAY": a, "X-Amz-Cf-Id": r, "X-delay-time": i, ...s } = e;
-    return this._client.post("/v1/completions", {
-      body: s,
-      ...n,
-      stream: s.stream ?? !1,
-      headers: {
-        ...a != null ? { "CF-RAY": a } : void 0,
-        ...r != null ? { "X-Amz-Cf-Id": r } : void 0,
-        ...i?.toString() != null ? { "X-delay-time": i?.toString() } : void 0,
-        ...n?.headers
-      }
-    });
-  }
-}
-class NM extends Gp {
-  retrieve(e, n = {}, a) {
-    if (uP(n))
-      return this.retrieve(e, {}, n);
-    const { "CF-RAY": r, "X-Amz-Cf-Id": i } = n;
-    return this._client.get(`/v1/models/${e}`, {
-      ...a,
-      headers: {
-        ...r != null ? { "CF-RAY": r } : void 0,
-        ...i != null ? { "X-Amz-Cf-Id": i } : void 0,
-        ...a?.headers
-      }
-    });
-  }
-  list(e = {}, n) {
-    if (uP(e))
-      return this.list({}, e);
-    const { "CF-RAY": a, "X-Amz-Cf-Id": r } = e;
-    return this._client.get("/v1/models", {
-      ...n,
-      headers: {
-        ...a != null ? { "CF-RAY": a } : void 0,
-        ...r != null ? { "X-Amz-Cf-Id": r } : void 0,
-        ...n?.headers
-      }
-    });
-  }
-}
-var kM;
-class at extends gB {
-  /**
-   * API Client for interfacing with the Cerebras API.
-   *
-   * @param {string | undefined} [opts.apiKey=process.env['CEREBRAS_API_KEY'] ?? undefined]
-   * @param {string} [opts.baseURL=process.env['CEREBRAS_BASE_URL'] ?? https://api.cerebras.ai] - Override the default base URL for the API.
-   * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
-   * @param {number} [opts.httpAgent] - An HTTP agent used to manage HTTP(s) connections.
-   * @param {Core.Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
-   * @param {number} [opts.maxRetries=2] - The maximum number of times the client will retry a request.
-   * @param {Core.Headers} opts.defaultHeaders - Default headers to include with every request to the API.
-   * @param {Core.DefaultQuery} opts.defaultQuery - Default query parameters to include with every request to the API.
-   * @param {boolean | undefined} opts.warmTCPConnection - Whether to warm TCP connection in the constructor.
-   */
-  constructor({ baseURL: e = fP("CEREBRAS_BASE_URL"), apiKey: n = fP("CEREBRAS_API_KEY"), warmTCPConnection: a = !0, ...r } = {}) {
-    if (n === void 0)
-      throw new la("The CEREBRAS_API_KEY environment variable is missing or empty; either provide it, or instantiate the Cerebras client with an apiKey option, like new Cerebras({ apiKey: 'My API Key' }).");
-    const i = {
-      apiKey: n,
-      ...r,
-      baseURL: e || "https://api.cerebras.ai"
-    };
-    super({
-      baseURL: i.baseURL,
-      timeout: i.timeout ?? 6e4,
-      httpAgent: i.httpAgent,
-      maxRetries: i.maxRetries,
-      fetch: i.fetch
-    }), this.chat = new ny(this), this.completions = new IM(this), this.models = new NM(this), this._options = i, this.apiKey = n, a && (async () => {
-      try {
-        await this.get("/v1/tcp_warming", {
-          timeout: 1e3,
-          maxRetries: 0
-        });
-      } catch (s) {
-        Vo(`TCP Warming had exception: ${s}`);
-      }
-    })();
-  }
-  defaultQuery() {
-    return this._options.defaultQuery;
-  }
-  defaultHeaders(e) {
-    return {
-      ...super.defaultHeaders(e),
-      ...this._options.defaultHeaders
-    };
-  }
-  authHeaders(e) {
-    return { Authorization: `Bearer ${this.apiKey}` };
-  }
-}
-kM = at;
-at.Cerebras = kM;
-at.DEFAULT_TIMEOUT = 6e4;
-at.CerebrasError = la;
-at.APIError = Nt;
-at.APIConnectionError = Zp;
-at.APIConnectionTimeoutError = yM;
-at.APIUserAbortError = vg;
-at.NotFoundError = OM;
-at.ConflictError = jM;
-at.RateLimitError = RM;
-at.BadRequestError = wM;
-at.AuthenticationError = vM;
-at.InternalServerError = CM;
-at.PermissionDeniedError = SM;
-at.UnprocessableEntityError = PM;
-at.toFile = fB;
-at.fileFromPath = _M;
-at.Chat = ny;
-at.Completions = IM;
-at.Models = NM;
-function pP(t) {
-  const e = t.match(/^data:.*?;base64,(.*)$/);
-  return e ? e[1] : "";
-}
-function MB(t) {
-  if (typeof t.content == "string")
-    return [
-      {
-        role: "assistant",
-        content: t.content
-      }
-    ];
-  const n = t.content.filter((r) => r.type === "text" && typeof r.text == "string").map((r) => ({
-    role: "assistant",
-    content: r.text
-  }));
-  let a;
-  if (t.content.find((r) => r.type === "tool_use") && t.tool_calls?.length) {
-    const r = t.tool_calls?.map((i) => ({
-      id: i.id,
-      type: "function",
-      function: {
-        name: i.name,
-        arguments: JSON.stringify(i.args)
-      }
-    }));
-    r && (a = {
-      role: "assistant",
-      tool_calls: r,
-      content: ""
-    });
-  } else if (t.content.find((r) => r.type === "tool_use") && !t.tool_calls?.length)
-    throw new Error("'tool_use' content type is not supported without tool calls.");
-  return [...n, ...a ? [a] : []];
-}
-function AB(t) {
-  return typeof t.content == "string" ? [
-    {
-      role: "user",
-      content: t.content
-    }
-  ] : t.content.map((e) => {
-    if (e.type === "text")
-      return {
-        role: "user",
-        content: e.text
-      };
-    if (e.type === "image_url") {
-      if (typeof e.image_url == "string")
-        return {
-          role: "user",
-          content: "",
-          images: [pP(e.image_url)]
-        };
-      if (e.image_url.url && typeof e.image_url.url == "string")
-        return {
-          role: "user",
-          content: "",
-          images: [pP(e.image_url.url)]
-        };
-    }
-    throw new Error(`Unsupported content type: ${e.type}`);
-  });
-}
-function EB(t) {
-  if (typeof t.content == "string")
-    return [
-      {
-        role: "system",
-        content: t.content
-      }
-    ];
-  if (t.content.every((e) => e.type === "text" && typeof e.text == "string"))
-    return t.content.map((e) => ({
-      role: "system",
-      content: e.text
-    }));
-  throw new Error(`Unsupported content type(s): ${t.content.map((e) => e.type).join(", ")}`);
-}
-function IB(t) {
-  if (typeof t.content != "string")
-    throw new Error("Non string tool message content is not supported");
-  return [
-    {
-      role: "tool",
-      content: t.content,
-      tool_call_id: t.tool_call_id
-    }
-  ];
-}
-function mP(t) {
-  return t.flatMap((e) => {
-    if (["human", "generic"].includes(e._getType()))
-      return AB(e);
-    if (e._getType() === "ai")
-      return MB(e);
-    if (e._getType() === "system")
-      return EB(e);
-    if (e._getType() === "tool")
-      return IB(e);
-    throw new Error(`Unsupported message type: ${e._getType()}`);
-  });
-}
-function NB(t) {
-  if (t)
-    return t === "any" || t === "required" ? "required" : t === "auto" ? "auto" : t === "none" ? "none" : typeof t == "string" ? {
-      type: "function",
-      function: {
-        name: t
-      }
-    } : t;
-}
-class sK extends Sn {
-  static lc_name() {
-    return "ChatCerebras";
-  }
-  get lc_secrets() {
-    return {
-      apiKey: "CEREBRAS_API_KEY"
-    };
-  }
-  get lc_aliases() {
-    return {
-      apiKey: "CEREBRAS_API_KEY"
-    };
-  }
-  getLsParams(e) {
-    const n = this.invocationParams(e);
-    return {
-      ls_provider: "cerebras",
-      ls_model_name: this.model,
-      ls_model_type: "chat",
-      ls_temperature: n.temperature ?? void 0,
-      ls_max_tokens: n.max_completion_tokens ?? void 0,
-      ls_stop: e.stop
-    };
-  }
-  constructor(e) {
-    super(e ?? {}), Object.defineProperty(this, "lc_serializable", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: !0
-    }), Object.defineProperty(this, "client", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "model", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "maxCompletionTokens", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "temperature", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "topP", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "seed", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), Object.defineProperty(this, "streaming", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), this.model = e.model, this.maxCompletionTokens = e.maxCompletionTokens, this.temperature = e.temperature, this.topP = e.topP, this.seed = e.seed, this.streaming = e.streaming, this.client = new at({
-      apiKey: e.apiKey ?? ft("CEREBRAS_API_KEY"),
-      timeout: e.timeout,
-      // Rely on built-in async caller
-      maxRetries: 0,
-      fetch: e.fetch
-    });
-  }
-  // Replace
-  _llmType() {
-    return "cerebras";
-  }
-  bindTools(e, n) {
-    return this.bind({
-      tools: e.map((a) => $d(a)),
-      ...n
-    });
-  }
-  /**
-   * A method that returns the parameters for an Ollama API call. It
-   * includes model and options parameters.
-   * @param options Optional parsed call options.
-   * @returns An object containing the parameters for an Ollama API call.
-   */
-  invocationParams(e) {
-    return {
-      model: this.model,
-      max_completion_tokens: this.maxCompletionTokens,
-      temperature: this.temperature,
-      top_p: this.topP,
-      seed: this.seed,
-      stop: e?.stop,
-      response_format: e?.response_format,
-      user: e?.user,
-      tools: e?.tools?.length ? e.tools.map((n) => $d(n)) : void 0,
-      tool_choice: NB(e?.tool_choice)
-    };
-  }
-  async _generate(e, n, a) {
-    if (this.streaming) {
-      let c;
-      for await (const p of this._streamResponseChunks(e, n, a))
-        c ? c = on(c, p.message) : c = p.message;
-      const h = new $t({
-        id: c?.id,
-        content: c?.content ?? "",
-        tool_calls: c?.tool_calls,
-        response_metadata: c?.response_metadata,
-        usage_metadata: c?.usage_metadata
-      });
-      return {
-        generations: [
-          {
-            text: typeof h.content == "string" ? h.content : "",
-            message: h
-          }
-        ]
-      };
-    }
-    const r = await this.caller.call(async () => await this.client.chat.completions.create({
-      ...this.invocationParams(n),
-      messages: mP(e),
-      stream: !1
-    }, {
-      headers: n.headers,
-      httpAgent: n.httpAgent
-    })), { choices: i, usage: s, ...o } = r, l = i[0], f = l?.message?.content ?? "", u = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      input_tokens: s?.prompt_tokens,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      output_tokens: s?.completion_tokens,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      total_tokens: s?.total_tokens
-    };
-    return {
-      generations: [
-        {
-          text: f,
-          message: new $t({
-            content: f,
-            tool_calls: l?.message?.tool_calls?.map(
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (c) => ({
-                id: c.id,
-                name: c.function?.name,
-                args: JSON.parse(c.function?.arguments),
-                index: c.index,
-                type: "tool_call"
-              })
-            ),
-            usage_metadata: u,
-            response_metadata: o
-          })
-        }
-      ]
-    };
-  }
-  /**
-   * Implement to support streaming.
-   * Should yield chunks iteratively.
-   */
-  async *_streamResponseChunks(e, n, a) {
-    const r = await this.caller.call(async () => await this.client.chat.completions.create({
-      ...this.invocationParams(n),
-      messages: mP(e),
-      stream: !0
-    }, {
-      headers: n.headers,
-      httpAgent: n.httpAgent
-    }));
-    for await (const i of r) {
-      const { choices: s, system_fingerprint: o, model: l, id: f, object: u, usage: c, ...h } = i, p = s[0], d = p?.delta?.content ?? "";
-      let m;
-      c !== void 0 && (m = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        input_tokens: c.prompt_tokens,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        output_tokens: c.completion_tokens,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        total_tokens: c.total_tokens
-      });
-      const b = {};
-      p.finish_reason != null && (b.finish_reason = p.finish_reason, b.id = f, b.system_fingerprint = o, b.model = l, b.object = u);
-      const g = new Bt({
-        text: d,
-        message: new Ze({
-          content: d,
-          tool_call_chunks: p?.delta.tool_calls?.map(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (_) => ({
-              id: _.id,
-              name: _.function?.name,
-              args: _.function?.arguments,
-              index: _.index,
-              type: "tool_call_chunk"
-            })
-          ),
-          usage_metadata: m,
-          response_metadata: h
-        }),
-        generationInfo: b
-      });
-      yield g, await a?.handleLLMNewToken(d, void 0, void 0, void 0, void 0, { chunk: g });
-    }
-  }
-  withStructuredOutput(e, n) {
-    if (n?.strict)
-      throw new Error('"strict" mode is not supported for this model by default.');
-    const a = e, r = n?.name, i = a.description ?? "A function available to call.", s = n?.method, o = n?.includeRaw;
-    if (s === "jsonMode")
-      throw new Error('Cerebras withStructuredOutput implementation only supports "functionCalling" as a method.');
-    let l = r ?? "extract", f;
-    eu(a) ? f = [
-      {
-        type: "function",
-        function: {
-          name: l,
-          description: i,
-          parameters: Cn(a)
-        }
-      }
-    ] : ("name" in a && (l = a.name), f = [
-      {
-        type: "function",
-        function: {
-          name: l,
-          description: i,
-          parameters: a
-        }
-      }
-    ]);
-    const u = this.bindTools(f, {
-      tool_choice: f[0].function.name
-    }), c = au.from((m) => {
-      if (!m.tool_calls || m.tool_calls.length === 0)
-        throw new Error("No tool calls found in the response.");
-      const b = m.tool_calls.find((g) => g.name === l);
-      if (!b)
-        throw new Error(`No tool call found with name ${l}.`);
-      return b.args;
-    });
-    if (!o)
-      return u.pipe(c).withConfig({
-        runName: "ChatCerebrasStructuredOutput"
-      });
-    const h = Mt.assign({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      parsed: (m, b) => c.invoke(m.raw, b)
-    }), p = Mt.assign({
-      parsed: () => null
-    }), d = h.withFallbacks({
-      fallbacks: [p]
-    });
-    return dt.from([
-      {
-        raw: u
-      },
-      d
-    ]).withConfig({
-      runName: "ChatCerebrasStructuredOutput"
-    });
   }
 }
 class lr {
@@ -58042,12 +58042,12 @@ export {
   oK as CharacterTextSplitter,
   Iu as ChatAgent,
   OZ as ChatAnthropic,
-  sK as ChatCerebras,
-  eK as ChatGroq,
+  nK as ChatCerebras,
+  WZ as ChatGroq,
   yo as ChatMessage,
   fx as ChatMessageHistory,
   jZ as ChatMistralAI,
-  CZ as ChatOllama,
+  aK as ChatOllama,
   Zz as ChatOpenAI,
   da as ChatPromptTemplate,
   hh as CheerioWebBaseLoader,
@@ -58069,8 +58069,8 @@ export {
   Qp as MapReduceDocumentsChain,
   ly as MemoryVectorStore,
   PZ as MistralAIEmbeddings,
-  $Z as Ollama,
-  TZ as OllamaEmbeddings,
+  sK as Ollama,
+  iK as OllamaEmbeddings,
   Kz as OpenAI,
   Gz as OpenAIEmbeddings,
   We as PromptTemplate,

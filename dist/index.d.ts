@@ -5,12 +5,12 @@ export { // Anthropic
 ChatAnthropic, } from '@langchain/anthropic';
 export { // Mistral
 ChatMistralAI, MistralAIEmbeddings } from '@langchain/mistralai';
-export { // Ollama
-Ollama, ChatOllama, OllamaEmbeddings } from '@langchain/ollama';
 export { // Groq
 ChatGroq, } from '@langchain/groq';
 export { // Cerebras
 ChatCerebras } from '@langchain/cerebras';
+export { // Ollama
+Ollama, ChatOllama, OllamaEmbeddings } from '@langchain/ollama';
 /**** Core Components ****/
 export { BaseMessage, HumanMessage, SystemMessage, AIMessage, ChatMessage, FunctionMessage, } from '@langchain/core/messages';
 export { Document } from 'langchain/document';
