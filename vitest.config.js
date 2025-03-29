@@ -10,7 +10,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'langchain-js-bundle': resolve(__dirname, 'dist/index.js')
+      'langchain-js-bundle': resolve(__dirname, 'dist/langchain-js-bundle.js')
     }
   }
 });
