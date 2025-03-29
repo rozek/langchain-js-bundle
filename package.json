@@ -23,9 +23,9 @@
     "url": "https://github.com/rozek/langchain-js-bundle/issues"
   },
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/langchain-js-bundle.js",
+  "module": "dist/langchain-js-bundle.js",
+  "types": "dist/langchain-js-bundle.d.ts",
   "files": [
     "dist"
   ],
