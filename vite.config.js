@@ -6,9 +6,9 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: resolve(__dirname, 'src/langchain-js-bundle.ts'),
       name: 'langchain-js-bundle',
-      fileName: 'index',
+      fileName: 'langchain-js-bundle',
       formats: ['es'],
     },
     rollupOptions: {
